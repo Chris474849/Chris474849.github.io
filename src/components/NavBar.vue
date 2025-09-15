@@ -37,6 +37,15 @@
 </template>
 
 <script setup>
+import { onMounted } from 'vue'
+
+let navbarCollapse = null
+
+onMounted(() => {
+  // Get reference to Bootstrap collapse instance
+  navbarCollapse = document.getElementById('navbarNav')
+})
+
 const scrollToSection = (event) => {
   event.preventDefault()
   const target = document.querySelector(event.target.getAttribute('href'))
@@ -45,6 +54,19 @@ const scrollToSection = (event) => {
       behavior: 'smooth',
       block: 'start'
     })
+  }
+  
+  // Close mobile menu after navigation
+  closeNavbar()
+}
+
+const closeNavbar = () => {
+  if (navbarCollapse && navbarCollapse.classList.contains('show')) {
+    // Use Bootstrap's collapse method to close the menu
+    const bsCollapse = new window.bootstrap.Collapse(navbarCollapse, {
+      toggle: false
+    })
+    bsCollapse.hide()
   }
 }
 </script>
