@@ -40,10 +40,18 @@
 import { onMounted } from 'vue'
 
 let navbarCollapse = null
+let bsCollapse = null
 
 onMounted(() => {
   // Get reference to Bootstrap collapse instance
   navbarCollapse = document.getElementById('navbarNav')
+  
+  // Initialize Bootstrap collapse if available
+  if (navbarCollapse && window.bootstrap) {
+    bsCollapse = new window.bootstrap.Collapse(navbarCollapse, {
+      toggle: false
+    })
+  }
 })
 
 const scrollToSection = (event) => {
@@ -61,12 +69,30 @@ const scrollToSection = (event) => {
 }
 
 const closeNavbar = () => {
-  if (navbarCollapse && navbarCollapse.classList.contains('show')) {
-    // Use Bootstrap's collapse method to close the menu
-    const bsCollapse = new window.bootstrap.Collapse(navbarCollapse, {
-      toggle: false
-    })
-    bsCollapse.hide()
+  // Multiple methods to ensure the navbar closes
+  const navbar = document.getElementById('navbarNav')
+  const toggleButton = document.querySelector('.navbar-toggler')
+  
+  if (navbar && navbar.classList.contains('show')) {
+    // Method 1: Remove Bootstrap classes directly
+    navbar.classList.remove('show')
+    navbar.classList.remove('collapsing')
+    
+    // Method 2: Reset aria-expanded attribute
+    if (toggleButton) {
+      toggleButton.setAttribute('aria-expanded', 'false')
+      toggleButton.classList.add('collapsed')
+    }
+    
+    // Method 3: Try Bootstrap's method if available
+    setTimeout(() => {
+      if (window.bootstrap && window.bootstrap.Collapse) {
+        const bsCollapse = window.bootstrap.Collapse.getInstance(navbar)
+        if (bsCollapse) {
+          bsCollapse.hide()
+        }
+      }
+    }, 50)
   }
 }
 </script>
