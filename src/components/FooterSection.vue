@@ -114,10 +114,11 @@ footer {
 
 .social-icons a {
   color: white;
-  font-size: 1.5rem;
-  margin-right: 15px;
+  font-size: 2rem; /* Aumentado de 1.5rem a 2rem */
+  margin-right: 25px; /* Aumentado de 15px a 25px */
   transition: color 0.3s ease;
   text-decoration: none;
+  display: inline-block; /* Para mejor control del spacing */
 }
 
 .social-icons a:hover {
@@ -167,6 +168,16 @@ footer {
 /* Add transition to all social icons */
 .social-icons i {
   transition: all 0.3s ease;
+}
+
+/* Remove margin from last social icon */
+.social-icons a:last-child {
+  margin-right: 0;
+}
+
+/* Add some padding to social icons container for better touch targets */
+.social-icons {
+  padding: 10px 0;
 }
 
 .whatsapp-link {
