@@ -29,8 +29,30 @@
         </div>
         <div class="col-lg-4 mb-4 mb-lg-0">
           <h3 class="h5 mb-4">Contacto</h3>
-          <p><i class="fas fa-phone me-2"></i> +53 56601651</p>
-          <p><i class="fas fa-phone me-2"></i> +53 55494545</p>
+          <p>
+            <a 
+              href="https://wa.me/5356601651" 
+              @click="openWhatsApp('5356601651', $event)"
+              target="_blank" 
+              rel="noopener noreferrer"
+              class="whatsapp-link"
+              title="Contactar por WhatsApp"
+            >
+              <i class="fab fa-whatsapp me-2"></i> +53 56601651
+            </a>
+          </p>
+          <p>
+            <a 
+              href="https://wa.me/5355494545" 
+              @click="openWhatsApp('5355494545', $event)"
+              target="_blank" 
+              rel="noopener noreferrer"
+              class="whatsapp-link"
+              title="Contactar por WhatsApp"
+            >
+              <i class="fab fa-whatsapp me-2"></i> +53 55494545
+            </a>
+          </p>
           <p><i class="fas fa-envelope me-2"></i> dyprods0581@gmail.com</p>
         </div>
         <div class="col-lg-4">
@@ -63,6 +85,24 @@ const openInstagram = (event) => {
     }, 500)
   }
 }
+
+const openWhatsApp = (phoneNumber, event) => {
+  // Detecta si es un dispositivo móvil
+  const esMovil = /Android|webOS|iPhone|iPad|iPod|blackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+  
+  if (esMovil) {
+    event?.preventDefault() // evitar abrir el enlace web inmediatamente
+    
+    // Intenta abrir la aplicación de WhatsApp
+    window.location.href = `whatsapp://send?phone=${phoneNumber}&text=¡Hola! Me interesa conocer más sobre sus servicios fotográficos.`
+    
+    // Si la app no está instalada, redirige a WhatsApp Web después de un tiempo
+    setTimeout(() => {
+      window.open(`https://wa.me/${phoneNumber}?text=¡Hola! Me interesa conocer más sobre sus servicios fotográficos.`, '_blank')
+    }, 500)
+  }
+  // En desktop, abre WhatsApp Web directamente
+}
 </script>
 
 <style scoped>
@@ -82,5 +122,28 @@ footer {
 
 .social-icons a:hover {
   color: var(--secondary-color, #e67e22);
+}
+
+.whatsapp-link {
+  color: white;
+  text-decoration: none;
+  transition: color 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+}
+
+.whatsapp-link:hover {
+  color: #25D366; /* Color oficial de WhatsApp */
+  text-decoration: none;
+}
+
+.whatsapp-link i {
+  color: #25D366; /* Icono siempre verde WhatsApp */
+  font-size: 1.2em;
+  transition: transform 0.3s ease;
+}
+
+.whatsapp-link:hover i {
+  transform: scale(1.1);
 }
 </style>
