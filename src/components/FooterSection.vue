@@ -124,6 +124,51 @@ footer {
   color: var(--secondary-color, #e67e22);
 }
 
+/* Instagram hover effect with gradient colors */
+.social-icons a:hover .fa-instagram {
+  background: linear-gradient(45deg, #f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  transform: scale(1.1);
+  transition: all 0.3s ease;
+}
+
+/* Fallback for browsers that don't support background-clip: text */
+@supports not (-webkit-background-clip: text) {
+  .social-icons a:hover .fa-instagram {
+    color: #E4405F; /* Instagram pink as fallback */
+  }
+}
+
+/* Add transition to Instagram icon */
+.social-icons .fa-instagram {
+  transition: all 0.3s ease;
+}
+
+/* Facebook hover effect */
+.social-icons a:hover .fa-facebook {
+  color: #1877F2; /* Facebook blue */
+  transform: scale(1.1);
+}
+
+/* Twitter hover effect */
+.social-icons a:hover .fa-twitter {
+  color: #1DA1F2; /* Twitter blue */
+  transform: scale(1.1);
+}
+
+/* LinkedIn hover effect */
+.social-icons a:hover .fa-linkedin {
+  color: #0A66C2; /* LinkedIn blue */
+  transform: scale(1.1);
+}
+
+/* Add transition to all social icons */
+.social-icons i {
+  transition: all 0.3s ease;
+}
+
 .whatsapp-link {
   color: white;
   text-decoration: none;
