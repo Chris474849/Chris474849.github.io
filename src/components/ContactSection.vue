@@ -37,7 +37,7 @@
                 </div>
               </div>
               <div class="col-md-6">
-                <label for="phone" class="form-label">Teléfono (opcional)</label>
+                <label for="phone" class="form-label">Teléfono *</label>
                 <input 
                   type="tel" 
                   :class="['form-control', { 'is-invalid': hasError('phone') }]" 
@@ -45,7 +45,7 @@
                   v-model="formData.phone"
                   @blur="validateField('phone')"
                   @input="hasAttemptedSubmit && validateField('phone')"
-                  placeholder="+53 56601651"
+                  required
                 >
                 <div v-if="hasError('phone')" class="invalid-feedback">
                   {{ errors.phone }}
@@ -163,11 +163,9 @@ const validationRules = {
     return null
   },
   phone: (value) => {
-    // Teléfono es opcional, solo validar si se proporciona
-    if (value && value.trim()) {
-      const phoneRegex = /^[\d\s\+\-\(\)]{8,15}$/
-      if (!phoneRegex.test(value.replace(/\s/g, ''))) return 'Por favor ingresa un teléfono válido'
-    }
+    if (!value || !value.trim()) return 'El teléfono es obligatorio'
+    const phoneRegex = /^[\d\s\+\-\(\)]{8,15}$/
+    if (!phoneRegex.test(value.replace(/\s/g, ''))) return 'Por favor ingresa un teléfono válido'
     return null
   },
   service: (value) => {
