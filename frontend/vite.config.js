@@ -15,4 +15,6 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url))
     },
   },
+  // Configuración para GitHub Pages
+  base: process.env.NODE_ENV === 'production' ? '/Chris474849.github.io/' : '/',
 })
