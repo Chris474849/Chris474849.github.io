@@ -30,23 +30,27 @@ Sitio web moderno de DY Prods desarrollado con Vue.js 3, Vite y Bootstrap 5.
 ## 🛠️ Desarrollo Local
 
 ### Prerrequisitos
-- Node.js 16+ 
+- Node.js 18.0.0+ 
 - npm
 
-### Instalación
+### Instalación Rápida
 
 ```bash
 cd frontend
 npm install
-```
-
-### Desarrollo
-
-```bash
 npm run dev
 ```
 
 El proyecto estará disponible en `http://localhost:5173/`
+
+### ❗ ¿Problemas con la instalación?
+
+**¡IMPORTANTE!** Si tienes errores con npm o Node.js, consulta nuestra **[Guía de Setup Local Completa](SETUP_LOCAL.md)** que incluye:
+
+- Soluciones a todos los errores comunes
+- Guía paso a paso detallada
+- Alternativas con Docker
+- Troubleshooting específico por sistema operativo
 
 ### Build de Producción
 
