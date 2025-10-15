@@ -5,15 +5,14 @@
       <button 
         class="navbar-toggler" 
         type="button" 
-        data-bs-toggle="collapse" 
-        data-bs-target="#navbarNav" 
+        @click="toggleNavbar" 
         aria-controls="navbarNav" 
         aria-expanded="false" 
         aria-label="Toggle navigation"
       >
         <span class="navbar-toggler-icon"></span>
       </button>
-      <div class="collapse navbar-collapse" id="navbarNav">
+      <div :class="{'collapse': true, 'navbar-collapse': true, 'show': isNavbarOpen}" id="navbarNav">
         <ul class="navbar-nav ms-auto">
           <li class="nav-item">
             <a class="nav-link" href="#home" @click="scrollToSection">Inicio</a>
@@ -37,6 +36,14 @@
 </template>
 
 <script setup>
+import { ref } from 'vue'
+
+const isNavbarOpen = ref(false)
+
+const toggleNavbar = () => {
+  isNavbarOpen.value = !isNavbarOpen.value
+}
+
 const scrollToSection = (event) => {
   event.preventDefault()
   const target = document.querySelector(event.target.getAttribute('href'))
