@@ -134,7 +134,7 @@
 
 <script setup>
 import { ref, reactive, onMounted } from 'vue'
-import SuccessPopup from './SuccessPopup.vue'
+import SuccessPopup from '../common/SuccessPopup.vue'
 
 const isSubmitting = ref(false)
 const hasAttemptedSubmit = ref(false)
