@@ -6,24 +6,16 @@
           <h3 class="h5 mb-4">DY Prods</h3>
           <p>Tu estudio fotográfico de confianza para capturar los momentos más importantes de tu vida.</p>
           <div class="social-icons">
-            <a href="#" class="social-link facebook" aria-label="Facebook">
-              <i class="fab fa-facebook-f"></i>
-            </a>
             <a 
-              href="https://www.instagram.com/DY_Prods/" 
-              @click="openInstagram" 
+              v-for="(social, index) in socialLinks" 
+              :key="index" 
+              :href="social.link" 
+              :class="['social-link', social.class]" 
+              :aria-label="social.label"
               target="_blank" 
-              rel="noopener noreferrer" 
-              class="social-link instagram"
-              aria-label="Instagram"
+              rel="noopener noreferrer"
             >
-              <i class="fab fa-instagram"></i>
-            </a>
-            <a href="#" class="social-link twitter" aria-label="Twitter">
-              <i class="fab fa-twitter"></i>
-            </a>
-            <a href="#" class="social-link linkedin" aria-label="LinkedIn">
-              <i class="fab fa-linkedin-in"></i>
+              <i :class="social.icon"></i>
             </a>
           </div>
         </div>
@@ -31,29 +23,16 @@
           <h3 class="h5 mb-4">Contacto</h3>
           <div class="contact-info">
             <a 
-              href="https://wa.me/5356601651" 
-              class="contact-link whatsapp" 
+              v-for="(contact, index) in contactLinks" 
+              :key="index" 
+              :href="contact.link" 
+              class="contact-link" 
+              :aria-label="contact.label"
               target="_blank" 
               rel="noopener noreferrer"
-              aria-label="Contactar por WhatsApp +53 56601651"
+              :class="contact.class"
             >
-              <i class="fab fa-whatsapp me-2"></i> +53 56601651
-            </a>
-            <a 
-              href="https://wa.me/5355494545" 
-              class="contact-link whatsapp" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              aria-label="Contactar por WhatsApp +53 55494545"
-            >
-              <i class="fab fa-whatsapp me-2"></i> +53 55494545
-            </a>
-            <a 
-              href="mailto:dyprods0581@gmail.com" 
-              class="contact-link email"
-              aria-label="Enviar email a dyprods0581@gmail.com"
-            >
-              <i class="fas fa-envelope me-2"></i> dyprods0581@gmail.com
+              <i :class="contact.icon" class="me-2"></i> {{ contact.text }}
             </a>
           </div>
         </div>
@@ -73,20 +52,58 @@
 </template>
 
 <script setup>
-const openInstagram = (event) => {
-  // Detecta si es un dispositivo móvil
-  const esMovil = /Android|webOS|iPhone|iPad|iPod|blackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
-  
-  if (esMovil) {
-    event.preventDefault() // evitar abrir el enlace web inmediatamente
-    window.location.href = "instagram://user?username=DY_Prods" // Intenta abrir la aplicación
-    
-    // Si la app no está instalada, redirige al enlace web después de un tiempo
-    setTimeout(() => {
-      window.location.href = "https://www.instagram.com/DY_Prods/"
-    }, 500)
+import { ref } from 'vue'
+
+const socialLinks = ref([
+  { 
+    icon: 'fab fa-facebook-f', 
+    link: 'https://www.facebook.com/DY_Prods', 
+    label: 'Facebook', 
+    class: 'facebook' 
+  },
+  { 
+    icon: 'fab fa-instagram', 
+    link: 'https://www.instagram.com/DY_Prods/', 
+    label: 'Instagram', 
+    class: 'instagram' 
+  },
+  { 
+    icon: 'fab fa-twitter', 
+    link: '#', 
+    label: 'Twitter', 
+    class: 'twitter' 
+  },
+  { 
+    icon: 'fab fa-linkedin-in', 
+    link: '#', 
+    label: 'LinkedIn', 
+    class: 'linkedin' 
   }
-}
+])
+
+const contactLinks = ref([
+  { 
+    icon: 'fab fa-whatsapp', 
+    link: 'https://wa.me/5356601651', 
+    text: '+53 56601651', 
+    label: 'Contactar por WhatsApp +53 56601651',
+    class: 'whatsapp'
+  },
+  { 
+    icon: 'fab fa-whatsapp', 
+    link: 'https://wa.me/5355494545', 
+    text: '+53 55494545', 
+    label: 'Contactar por WhatsApp +53 55494545',
+    class: 'whatsapp'
+  },
+  { 
+    icon: 'fas fa-envelope', 
+    link: 'mailto:dyprods0581@gmail.com', 
+    text: 'dyprods0581@gmail.com', 
+    label: 'Enviar email a dyprods0581@gmail.com',
+    class: 'email'
+  }
+])
 </script>
 
 <style scoped>
@@ -212,19 +229,15 @@ footer {
   background: rgba(255, 255, 255, 0.05);
 }
 
-.contact-link:hover {
-  background: rgba(255, 255, 255, 0.1);
-  transform: translateX(5px);
-  color: white;
-}
-
+/* WhatsApp hover (verde) */
 .contact-link.whatsapp:hover {
   background: #25d366;
   color: white;
 }
 
+/* Correo hover (amarillo) */
 .contact-link.email:hover {
-  background: var(--secondary-color, #e67e22);
+  background: #f1c40f;
   color: white;
 }
 
