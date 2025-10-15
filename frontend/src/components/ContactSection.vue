@@ -14,7 +14,8 @@
                   id="name" 
                   v-model="formData.name"
                   @blur="validateField('name')"
-                  @input="hasAttemptedSubmit && validateField('name')"
+                  @input="handleNameInput"
+                  @keypress="preventInvalidNameChars"
                   required
                 >
                 <div v-if="hasError('name')" class="invalid-feedback">
@@ -37,7 +38,7 @@
                 </div>
               </div>
               <div class="col-md-6">
-                <label for="phone" class="form-label">Teléfono (opcional)</label>
+                <label for="phone" class="form-label">Teléfono *</label>
                 <input 
                   type="tel" 
                   :class="['form-control', { 'is-invalid': hasError('phone') }]" 
@@ -45,7 +46,7 @@
                   v-model="formData.phone"
                   @blur="validateField('phone')"
                   @input="hasAttemptedSubmit && validateField('phone')"
-                  placeholder="+53 56601651"
+                  required
                 >
                 <div v-if="hasError('phone')" class="invalid-feedback">
                   {{ errors.phone }}
@@ -118,15 +119,13 @@
             </div>
           </form>
           
-          <!-- Debug temporal - remover después -->
-          <div v-if="hasAttemptedSubmit" class="mt-4 p-3 bg-light border rounded">
-            <h6>Debug - Estado de validación:</h6>
-            <small>
-              <div>hasAttemptedSubmit: {{ hasAttemptedSubmit }}</div>
-              <div>Errores: {{ JSON.stringify(errors) }}</div>
-              <div>Datos del formulario: {{ JSON.stringify(formData) }}</div>
-            </small>
-          </div>
+          <!-- Pop-up de éxito -->
+          <SuccessPopup 
+            :is-visible="showSuccessPopup"
+            :message="successMessage"
+            :auto-close="6000"
+            @close="closeSuccessPopup"
+          />
         </div>
       </div>
     </div>
@@ -134,10 +133,13 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted, computed } from 'vue'
+import { ref, reactive, onMounted } from 'vue'
+import SuccessPopup from './SuccessPopup.vue'
 
 const isSubmitting = ref(false)
 const hasAttemptedSubmit = ref(false)
+const showSuccessPopup = ref(false)
+const successMessage = ref('')
 
 const formData = reactive({
   name: '',
@@ -154,6 +156,28 @@ const validationRules = {
     if (!value || !value.trim()) return 'El nombre es obligatorio'
     if (value.trim().length < 2) return 'El nombre debe tener al menos 2 caracteres'
     if (value.length > 50) return 'El nombre no puede tener más de 50 caracteres'
+    
+    // Verificar que no contenga números
+    if (/\d/.test(value)) {
+      return 'El nombre no puede contener números'
+    }
+    
+    // Solo permitir letras (incluye acentos) y espacios
+    const allowedPattern = /^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+$/
+    if (!allowedPattern.test(value)) {
+      return 'El nombre solo puede contener letras y espacios'
+    }
+    
+    // Verificar que no tenga espacios múltiples consecutivos
+    if (/\s{2,}/.test(value)) {
+      return 'El nombre no puede tener espacios múltiples consecutivos'
+    }
+    
+    // Verificar que no empiece o termine con espacios
+    if (value !== value.trim()) {
+      return 'El nombre no puede empezar o terminar con espacios'
+    }
+    
     return null
   },
   email: (value) => {
@@ -163,11 +187,23 @@ const validationRules = {
     return null
   },
   phone: (value) => {
-    // Teléfono es opcional, solo validar si se proporciona
-    if (value && value.trim()) {
-      const phoneRegex = /^[\d\s\+\-\(\)]{8,15}$/
-      if (!phoneRegex.test(value.replace(/\s/g, ''))) return 'Por favor ingresa un teléfono válido'
+    if (!value || !value.trim()) return 'El teléfono es obligatorio'
+    
+    // Limpiar el número de espacios para validación
+    const cleanPhone = value.replace(/\s/g, '')
+    
+    // Validar formato de teléfono (permitir +, -, (), espacios y números)
+    const phoneRegex = /^[\d\s+()-]{8,15}$/
+    if (!phoneRegex.test(value)) {
+      return 'Por favor ingresa un teléfono válido (8-15 dígitos)'
     }
+    
+    // Verificar que tenga al menos 8 dígitos
+    const digitCount = cleanPhone.replace(/[^\d]/g, '').length
+    if (digitCount < 8) {
+      return 'El teléfono debe tener al menos 8 dígitos'
+    }
+    
     return null
   },
   service: (value) => {
@@ -179,7 +215,7 @@ const validationRules = {
     const selectedDate = new Date(value)
     const today = new Date()
     today.setHours(0, 0, 0, 0)
-    if (selectedDate < today) return 'La fecha no puede ser anterior a hoy'
+    if (selectedDate < today) return 'La fecha debe ser posterior al dia de hoy'
     return null
   },
   message: (value) => {
@@ -259,7 +295,9 @@ const submitForm = async () => {
   
   // Simular envío de formulario (como en el original)
   setTimeout(() => {
-    alert(`¡Gracias ${formData.name}! Tu solicitud ha sido recibida. Te contactaremos pronto en ${formData.email} para confirmar tu reserva.`)
+    // Mostrar pop-up de éxito
+    successMessage.value = `¡Gracias ${formData.name}! Tu solicitud ha sido recibida exitosamente. Te contactaremos pronto a ${formData.email} para confirmar tu reserva de ${formData.service}.`
+    showSuccessPopup.value = true
     
     // Limpiar el formulario y estados
     Object.keys(formData).forEach(key => {
@@ -271,6 +309,55 @@ const submitForm = async () => {
     hasAttemptedSubmit.value = false
     isSubmitting.value = false
   }, 1000)
+}
+
+// Función para cerrar el pop-up de éxito
+const closeSuccessPopup = () => {
+  showSuccessPopup.value = false
+  successMessage.value = ''
+}
+
+// Prevenir caracteres inválidos en el nombre durante la escritura
+const preventInvalidNameChars = (event) => {
+  const char = event.key
+  
+  // Permitir teclas de control (backspace, delete, tab, escape, enter, etc.)
+  if (event.ctrlKey || event.altKey || event.metaKey) {
+    return true
+  }
+  
+  // Permitir teclas especiales (flechas, home, end, etc.)
+  if (event.key.length > 1) {
+    return true
+  }
+  
+  // Solo permitir letras (incluye acentos) y espacios
+  const allowedChars = /^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]$/
+  if (!allowedChars.test(char)) {
+    event.preventDefault()
+    return false
+  }
+  
+  return true
+}
+
+// Manejar input del nombre con validación adicional
+const handleNameInput = (event) => {
+  let value = event.target.value
+  
+  // Limpiar caracteres no permitidos que puedan haber pasado
+  value = value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]/g, '')
+  
+  // Prevenir espacios múltiples consecutivos
+  value = value.replace(/\s{2,}/g, ' ')
+  
+  // Actualizar el valor
+  formData.name = value
+  
+  // Validar si ya se intentó enviar el formulario
+  if (hasAttemptedSubmit.value) {
+    validateField('name')
+  }
 }
 </script>
 
@@ -393,5 +480,64 @@ section {
 /* Transiciones suaves */
 .form-control, .form-select {
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Mejoras de responsividad para dispositivos pequeños */
+@media (max-width: 576px) {
+  .contact-form {
+    padding: 20px 15px !important;
+    margin: 0 5px;
+  }
+  
+  .section-title {
+    font-size: 1.4rem !important;
+    margin-bottom: 20px !important;
+  }
+  
+  .form-label {
+    font-size: 0.9rem !important;
+    margin-bottom: 0.3rem !important;
+  }
+  
+  .form-control, .form-select {
+    font-size: 0.9rem !important;
+    padding: 10px 12px !important;
+  }
+  
+  textarea.form-control {
+    min-height: 100px !important;
+  }
+  
+  .btn-lg {
+    width: 100% !important;
+    margin-top: 15px !important;
+  }
+  
+  .invalid-feedback {
+    font-size: 0.8rem !important;
+  }
+  
+  .form-text {
+    font-size: 0.75rem !important;
+  }
+}
+
+@media (max-width: 400px) {
+  .contact-form {
+    padding: 15px 10px !important;
+  }
+  
+  .section-title {
+    font-size: 1.2rem !important;
+  }
+  
+  .form-control, .form-select {
+    font-size: 0.85rem !important;
+    padding: 8px 10px !important;
+  }
+  
+  .form-label {
+    font-size: 0.85rem !important;
+  }
 }
 </style>
