@@ -334,6 +334,16 @@
           </div>
         </div>
 
+        <!-- Sección Solicitudes -->
+        <div v-if="activeSection === 'requests'" class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Solicitudes de Usuarios</h5>
+            </div>
+            <div class="card-body">
+                <AdminRequests />
+            </div>
+        </div>
+
         <!-- Sección Tema -->
         <div v-if="activeSection === 'theme'" class="card">
           <div class="card-header">
@@ -413,6 +423,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { siteConfig, saveSiteConfig, resetSiteConfig } from '@/config/siteConfig'
+import AdminRequests from './AdminRequests.vue'
 
 const activeSection = ref('general')
 const showConfirmModal = ref(false)
@@ -429,7 +440,8 @@ const sections = [
   { id: 'about', name: 'Acerca De', icon: 'fas fa-users' },
   { id: 'contact', name: 'Contacto', icon: 'fas fa-envelope' },
   { id: 'footer', name: 'Pie de Página', icon: 'fas fa-align-center' },
-  { id: 'theme', name: 'Tema', icon: 'fas fa-palette' }
+  { id: 'theme', name: 'Tema', icon: 'fas fa-palette' },
+  { id: 'requests', name: 'Solicitudes', icon: 'fas fa-list' }
 ]
 
 onMounted(() => {

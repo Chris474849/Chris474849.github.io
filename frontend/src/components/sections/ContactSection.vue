@@ -153,7 +153,7 @@
 <script setup>
 import { ref, reactive, onMounted } from 'vue'
 import SuccessPopup from '../common/SuccessPopup.vue'
-import { siteConfig, loadSiteConfig } from '@/config/siteConfig'
+import { siteConfig, loadSiteConfig, saveSiteConfig } from '@/config/siteConfig'
 
 const isSubmitting = ref(false)
 const hasAttemptedSubmit = ref(false)
@@ -299,12 +299,13 @@ onMounted(() => {
   })
 })
 
+
+
 const submitForm = async () => {
   hasAttemptedSubmit.value = true
-  
+
   // Validar todo el formulario
   if (!validateForm()) {
-    // Si hay errores, hacer scroll al primer campo con error
     const firstErrorField = Object.keys(errors)[0]
     if (firstErrorField) {
       const element = document.getElementById(firstErrorField)
@@ -315,30 +316,54 @@ const submitForm = async () => {
     }
     return
   }
-  
+
   isSubmitting.value = true
-  
-  // Simular envío de formulario (como en el original)
+
+  // Simular envío (podrías reemplazar por un POST real si luego lo deseas)
   setTimeout(() => {
-    // Obtener nombre del miembro del personal seleccionado
+    // Buscar datos del personal
     const selectedStaff = siteConfig.contact.staff.find(s => s.value === formData.staff)
     const staffName = selectedStaff ? selectedStaff.name : 'nuestro equipo'
-    
-    // Mostrar pop-up de éxito
-    successMessage.value = `¡Gracias ${formData.name}! Tu solicitud ha sido recibida exitosamente. Te contactaremos pronto a ${formData.email} para confirmar tu reserva de ${formData.service} con ${staffName}.`
+
+    // Crear la nueva solicitud
+    const newRequest = {
+      id: Date.now(),
+      tipo: formData.service,
+      nombre: formData.name,
+      gmail: formData.email,
+      telefono: formData.phone,
+      fecha: formData.date,
+      responsable: staffName,
+      mensaje: formData.message,
+      hora: new Date().toISOString().slice(0, 16)
+    }
+
+    // Guardar en siteConfig.requests
+    if (!Array.isArray(siteConfig.requests)) {
+      siteConfig.requests = []
+    }
+    siteConfig.requests.push(newRequest)
+    saveSiteConfig()
+
+    // Mostrar popup de éxito
+    successMessage.value = `¡Gracias ${formData.name}! Tu solicitud ha sido recibida exitosamente. 
+Te contactaremos pronto a ${formData.email} para confirmar tu reserva de ${formData.service} con ${staffName}.`
+
     showSuccessPopup.value = true
-    
-    // Limpiar el formulario y estados
+
+    // Limpiar el formulario
     Object.keys(formData).forEach(key => {
       formData[key] = ''
     })
     Object.keys(errors).forEach(key => {
       delete errors[key]
     })
+
     hasAttemptedSubmit.value = false
     isSubmitting.value = false
-  }, 1000)
+  }, 800)
 }
+
 
 // Función para cerrar el pop-up de éxito
 const closeSuccessPopup = () => {

@@ -152,6 +152,9 @@ export const siteConfig = reactive({
     ]
   },
 
+  // Lista de solicitudes de usuarios
+  requests: [],
+
   // Footer
   footer: {
     description: 'Tu estudio fotográfico de confianza para capturar los momentos más importantes de tu vida.',
