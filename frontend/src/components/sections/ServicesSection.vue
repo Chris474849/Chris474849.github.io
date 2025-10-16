@@ -1,9 +1,9 @@
 <template>
   <section id="services" class="py-5">
     <div class="container">
-      <h2 class="text-center section-title">Nuestros Servicios</h2>
+      <h2 class="text-center section-title">{{ siteConfig.services.title }}</h2>
       <div class="row">
-        <div class="col-md-4" v-for="service in services" :key="service.id">
+        <div class="col-md-4" v-for="service in siteConfig.services.items" :key="service.id">
           <div class="card text-center p-4 service-card" @click="openServiceModal(service)">
             <div class="service-icon">
               <i :class="service.icon"></i>
@@ -108,70 +108,17 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { Modal } from 'bootstrap'
+import { siteConfig, loadSiteConfig } from '@/config/siteConfig'
+
+onMounted(() => {
+  loadSiteConfig()
+})
 
 const selectedService = ref(null)
 const serviceModal = ref(null)
 
-const services = ref([
-  {
-    id: 1,
-    icon: 'fas fa-camera',
-    title: 'Sesiones Fotográficas',
-    description: 'Capturamos tu esencia con retratos profesionales para individuos, parejas y familias.',
-    fullDescription: 'Nuestras sesiones fotográficas están diseñadas para capturar la verdadera esencia de cada persona. Trabajamos en ambientes relajados y naturales, ya sea en nuestro estudio profesional o en locaciones exteriores de tu elección.',
-    detailImage: 'https://via.placeholder.com/600x400/e67e22/ffffff?text=Sesion+Fotografica',
-    duration: '1-3 horas',
-    price: '$150 USD',
-    idealFor: 'Individuos, parejas, familias',
-    includes: [
-      'Sesión fotográfica completa',
-      'Edición profesional de imágenes',
-      '20-30 fotos en alta resolución',
-      'Galería online privada',
-      'Consulta previa de styling'
-    ]
-  },
-  {
-    id: 2,
-    icon: 'fas fa-film',
-    title: 'Videografía',
-    description: 'Inmortalizamos tus eventos importantes con videos de alta calidad y edición profesional.',
-    fullDescription: 'Creamos videos cinematográficos que cuentan tu historia de manera única. Desde eventos corporativos hasta celebraciones familiares, capturamos cada momento importante con equipo profesional 4K.',
-    detailImage: 'https://via.placeholder.com/600x400/2c3e50/ffffff?text=Videografia',
-    duration: '2-8 horas',
-    price: '$300 USD',
-    idealFor: 'Eventos, bodas, corporativos',
-    includes: [
-      'Grabación en 4K',
-      'Audio profesional',
-      'Edición cinematográfica',
-      'Video final de 3-10 minutos',
-      'Material en bruto incluido',
-      'Música libre de derechos'
-    ]
-  },
-  {
-    id: 3,
-    icon: 'fas fa-building',
-    title: 'Fotografía Comercial',
-    description: 'Elevamos tu marca con fotografía profesional para productos, servicios y espacios.',
-    fullDescription: 'Especializados en fotografía comercial que hace que tu negocio destaque. Desde productos e-commerce hasta retratos corporativos, creamos imágenes que impulsan tu marca.',
-    detailImage: 'https://via.placeholder.com/600x400/e67e22/ffffff?text=Comercial',
-    duration: '2-4 horas',
-    price: '$250 USD',
-    idealFor: 'Empresas, productos, marcas',
-    includes: [
-      'Fotografía de productos',
-      'Retratos corporativos',
-      'Fotografía de espacios',
-      'Edición profesional',
-      'Formatos optimizados para web',
-      'Derechos comerciales incluidos'
-    ]
-  }
-])
 
 const openServiceModal = (service) => {
   selectedService.value = service

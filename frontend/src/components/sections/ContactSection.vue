@@ -1,7 +1,7 @@
 <template>
   <section id="contact" class="py-5 bg-light">
     <div class="container">
-      <h2 class="text-center section-title">Reserva tu Sesión</h2>
+      <h2 class="text-center section-title">{{ siteConfig.contact.title }}</h2>
       <div class="row justify-content-center">
         <div class="col-lg-8">
           <form @submit.prevent="submitForm" class="contact-form">
@@ -63,16 +63,15 @@
                   required
                 >
                   <option value="" disabled>Selecciona un servicio</option>
-                  <option value="retrato">Fotografía de Retrato</option>
-                  <option value="evento">Fotografía de Evento</option>
-                  <option value="comercial">Fotografía Comercial</option>
-                  <option value="video">Videografía</option>
+                  <option v-for="service in siteConfig.contact.services" :key="service.value" :value="service.value">
+                    {{ service.label }}
+                  </option>
                 </select>
                 <div v-if="hasError('service')" class="invalid-feedback">
                   {{ errors.service }}
                 </div>
               </div>
-              <div class="col-12">
+              <div class="col-md-6">
                 <label for="date" class="form-label">Fecha preferida *</label>
                 <input 
                   type="date" 
@@ -86,6 +85,25 @@
                 >
                 <div v-if="hasError('date')" class="invalid-feedback">
                   {{ errors.date }}
+                </div>
+              </div>
+              <div class="col-md-6">
+                <label for="staff" class="form-label">Elegir personal *</label>
+                <select 
+                  :class="['form-select', { 'is-invalid': hasError('staff') }]" 
+                  id="staff" 
+                  v-model="formData.staff"
+                  @blur="validateField('staff')"
+                  @change="validateField('staff')"
+                  required
+                >
+                  <option value="" disabled>Selecciona un miembro del personal</option>
+                  <option v-for="member in siteConfig.contact.staff" :key="member.value" :value="member.value">
+                    {{ member.name }}
+                  </option>
+                </select>
+                <div v-if="hasError('staff')" class="invalid-feedback">
+                  {{ errors.staff }}
                 </div>
               </div>
               <div class="col-12">
@@ -135,6 +153,7 @@
 <script setup>
 import { ref, reactive, onMounted } from 'vue'
 import SuccessPopup from '../common/SuccessPopup.vue'
+import { siteConfig, loadSiteConfig } from '@/config/siteConfig'
 
 const isSubmitting = ref(false)
 const hasAttemptedSubmit = ref(false)
@@ -147,6 +166,7 @@ const formData = reactive({
   phone: '',
   service: '',
   date: '',
+  staff: '',
   message: ''
 })
 
@@ -218,6 +238,10 @@ const validationRules = {
     if (selectedDate < today) return 'La fecha debe ser posterior al dia de hoy'
     return null
   },
+  staff: (value) => {
+    if (!value) return 'Seleccionar un miembro del personal es obligatorio'
+    return null
+  },
   message: (value) => {
     if (!value || !value.trim()) return 'El mensaje es obligatorio'
     if (value.trim().length < 10) return 'El mensaje debe tener al menos 10 caracteres'
@@ -259,6 +283,7 @@ const hasError = (fieldName) => {
 
 // Escuchar eventos de pre-selección de servicio
 onMounted(() => {
+  loadSiteConfig()
   window.addEventListener('preselect-service', (event) => {
     formData.service = event.detail.service
     if (event.detail.message) {
@@ -295,8 +320,12 @@ const submitForm = async () => {
   
   // Simular envío de formulario (como en el original)
   setTimeout(() => {
+    // Obtener nombre del miembro del personal seleccionado
+    const selectedStaff = siteConfig.contact.staff.find(s => s.value === formData.staff)
+    const staffName = selectedStaff ? selectedStaff.name : 'nuestro equipo'
+    
     // Mostrar pop-up de éxito
-    successMessage.value = `¡Gracias ${formData.name}! Tu solicitud ha sido recibida exitosamente. Te contactaremos pronto a ${formData.email} para confirmar tu reserva de ${formData.service}.`
+    successMessage.value = `¡Gracias ${formData.name}! Tu solicitud ha sido recibida exitosamente. Te contactaremos pronto a ${formData.email} para confirmar tu reserva de ${formData.service} con ${staffName}.`
     showSuccessPopup.value = true
     
     // Limpiar el formulario y estados

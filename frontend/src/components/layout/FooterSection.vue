@@ -3,8 +3,8 @@
     <div class="container">
       <div class="row">
         <div class="col-lg-4 mb-4 mb-lg-0">
-          <h3 class="h5 mb-4">DY Prods</h3>
-          <p>Tu estudio fotográfico de confianza para capturar los momentos más importantes de tu vida.</p>
+          <h3 class="h5 mb-4">{{ siteConfig.siteName }}</h3>
+          <p>{{ siteConfig.footer.description }}</p>
           <div class="social-icons">
             <a 
               v-for="(social, index) in socialLinks" 
@@ -38,9 +38,9 @@
         </div>
         <div class="col-lg-4">
           <h3 class="h5 mb-4">Horario</h3>
-          <p>Lunes a Viernes: 9:00 AM - 6:00 PM</p>
-          <p>Sábados: 10:00 AM - 3:00 PM</p>
-          <p>Domingos: Cerrado</p>
+          <p>{{ siteConfig.footer.schedule.weekdays }}</p>
+          <p>{{ siteConfig.footer.schedule.saturday }}</p>
+          <p>{{ siteConfig.footer.schedule.sunday }}</p>
         </div>
       </div>
       <hr class="my-4 bg-light">
@@ -52,58 +52,69 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, computed, onMounted } from 'vue'
+import { siteConfig, loadSiteConfig } from '@/config/siteConfig'
 
-const socialLinks = ref([
+onMounted(() => {
+  loadSiteConfig()
+})
+
+const socialLinks = computed(() => [
   { 
     icon: 'fab fa-facebook-f', 
-    link: 'https://www.facebook.com/DY_Prods', 
+    link: siteConfig.footer.social.facebook, 
     label: 'Facebook', 
     class: 'facebook' 
   },
   { 
     icon: 'fab fa-instagram', 
-    link: 'https://www.instagram.com/DY_Prods/', 
+    link: siteConfig.footer.social.instagram, 
     label: 'Instagram', 
     class: 'instagram' 
   },
   { 
     icon: 'fab fa-twitter', 
-    link: '#', 
+    link: siteConfig.footer.social.twitter, 
     label: 'Twitter', 
     class: 'twitter' 
   },
   { 
     icon: 'fab fa-linkedin-in', 
-    link: '#', 
+    link: siteConfig.footer.social.linkedin, 
     label: 'LinkedIn', 
     class: 'linkedin' 
   }
 ])
 
-const contactLinks = ref([
-  { 
-    icon: 'fab fa-whatsapp', 
-    link: 'https://wa.me/5356601651', 
-    text: '+53 56601651', 
-    label: 'Contactar por WhatsApp +53 56601651',
-    class: 'whatsapp'
-  },
-  { 
-    icon: 'fab fa-whatsapp', 
-    link: 'https://wa.me/5355494545', 
-    text: '+53 55494545', 
-    label: 'Contactar por WhatsApp +53 55494545',
-    class: 'whatsapp'
-  },
-  { 
-    icon: 'fas fa-envelope', 
-    link: 'mailto:dyprods0581@gmail.com', 
-    text: 'dyprods0581@gmail.com', 
-    label: 'Enviar email a dyprods0581@gmail.com',
+const contactLinks = computed(() => {
+  const phones = siteConfig.footer.contact.phones
+  const email = siteConfig.footer.contact.email
+  
+  const links = []
+  
+  // Agregar teléfonos
+  phones.forEach(phone => {
+    const cleanPhone = phone.replace(/[^\d+]/g, '')
+    links.push({
+      icon: 'fab fa-whatsapp',
+      link: `https://wa.me/${cleanPhone}`,
+      text: phone,
+      label: `Contactar por WhatsApp ${phone}`,
+      class: 'whatsapp'
+    })
+  })
+  
+  // Agregar email
+  links.push({
+    icon: 'fas fa-envelope',
+    link: `mailto:${email}`,
+    text: email,
+    label: `Enviar email a ${email}`,
     class: 'email'
-  }
-])
+  })
+  
+  return links
+})
 </script>
 
 <style scoped>

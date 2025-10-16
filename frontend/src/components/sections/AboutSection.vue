@@ -4,25 +4,18 @@
       <div class="row align-items-center">
         <div class="col-lg-6 mb-4 mb-lg-0">
           <img 
-            src="https://via.placeholder.com/800x600/2c3e50/ffffff?text=Nuestro+Equipo" 
+            :src="siteConfig.about.image" 
             alt="Nuestro equipo" 
             class="img-fluid rounded"
           >
         </div>
         <div class="col-lg-6">
-          <h2 class="section-title text-start">Sobre DY Prods</h2>
+          <h2 class="section-title text-start">{{ siteConfig.about.title }}</h2>
           <p class="lead">
-            Somos un equipo apasionado de fotógrafos y videógrafos comprometidos con la excelencia.
+            {{ siteConfig.about.subtitle }}
           </p>
-          <p>
-            Fundado en 2015, DY Prods se ha convertido en uno de los estudios fotográficos 
-            más reconocidos de la región. Nuestro enfoque se centra en capturar la belleza 
-            auténtica en cada toma, ya sea para eventos personales, corporativos o proyectos 
-            creativos.
-          </p>
-          <p>
-            Trabajamos con equipos de última generación y técnicas innovadoras para 
-            garantizar resultados excepcionales en cada proyecto.
+          <p v-for="paragraph in siteConfig.about.description" :key="paragraph">
+            {{ paragraph }}
           </p>
         </div>
       </div>
@@ -31,7 +24,12 @@
 </template>
 
 <script setup>
-// No se necesita lógica adicional para este componente
+import { onMounted } from 'vue'
+import { siteConfig, loadSiteConfig } from '@/config/siteConfig'
+
+onMounted(() => {
+  loadSiteConfig()
+})
 </script>
 
 <style scoped>
