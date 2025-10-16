@@ -1,11 +1,11 @@
 <template>
   <section id="portfolio" class="py-5 bg-light">
     <div class="container">
-      <h2 class="text-center section-title">Nuestro Portafolio</h2>
+      <h2 class="text-center section-title">{{ siteConfig.portfolio.title }}</h2>
       <div class="row g-4">
-        <div class="col-md-4" v-for="image in portfolioImages" :key="image.id">
+        <div class="col-md-4" v-for="image in siteConfig.portfolio.images" :key="image.id">
           <img 
-            :src="image.src" 
+            :src="image.url" 
             :alt="image.alt" 
             class="img-fluid gallery-img rounded"
             @click="openImage(image)"
@@ -17,40 +17,12 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { onMounted } from 'vue'
+import { siteConfig, loadSiteConfig } from '@/config/siteConfig'
 
-const portfolioImages = ref([
-  {
-    id: 1,
-    src: 'https://via.placeholder.com/600x400/e67e22/ffffff?text=Retrato',
-    alt: 'Fotografía de retrato'
-  },
-  {
-    id: 2,
-    src: 'https://via.placeholder.com/600x400/2c3e50/ffffff?text=Evento',
-    alt: 'Fotografía de evento'
-  },
-  {
-    id: 3,
-    src: 'https://via.placeholder.com/600x400/e67e22/ffffff?text=Comercial',
-    alt: 'Fotografía comercial'
-  },
-  {
-    id: 4,
-    src: 'https://via.placeholder.com/600x400/2c3e50/ffffff?text=Producto',
-    alt: 'Fotografía de producto'
-  },
-  {
-    id: 5,
-    src: 'https://via.placeholder.com/600x400/e67e22/ffffff?text=Boda',
-    alt: 'Fotografía de boda'
-  },
-  {
-    id: 6,
-    src: 'https://via.placeholder.com/600x400/2c3e50/ffffff?text=Arte',
-    alt: 'Fotografía artística'
-  }
-])
+onMounted(() => {
+  loadSiteConfig()
+})
 
 const openImage = (image) => {
   // En una implementación futura, aquí se puede abrir un modal o lightbox

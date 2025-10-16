@@ -1,7 +1,7 @@
 <template>
   <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
     <div class="container">
-      <a class="navbar-brand" href="#home">DY Prods</a>
+      <a class="navbar-brand" href="#home">{{ siteConfig.siteName }}</a>
       <button 
         class="navbar-toggler" 
         type="button" 
@@ -36,7 +36,12 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
+import { siteConfig, loadSiteConfig } from '@/config/siteConfig'
+
+onMounted(() => {
+  loadSiteConfig()
+})
 
 const isNavbarOpen = ref(false)
 
