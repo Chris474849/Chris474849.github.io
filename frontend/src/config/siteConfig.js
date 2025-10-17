@@ -83,7 +83,7 @@ export const siteConfig = reactive({
     images: [
       {
         id: 1,
-        url: 'https://via.placeholder.com/600x400/2c3e50/ffffff?text=Retrato',
+        url: 'https://www.pexels.com/search/portraits/?utm_source=chatgpt.com',
         alt: 'Fotografía de retrato'
       },
       {

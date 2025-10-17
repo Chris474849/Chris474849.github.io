@@ -63,8 +63,12 @@
                   required
                 >
                   <option value="" disabled>Selecciona un servicio</option>
-                  <option v-for="service in siteConfig.contact.services" :key="service.value" :value="service.value">
-                    {{ service.label }}
+                  <option 
+                    v-for="service in siteConfig.services.items" 
+                    :key="service.id" 
+                    :value="service.title"
+                  >
+                    {{ service.title }}
                   </option>
                 </select>
                 <div v-if="hasError('service')" class="invalid-feedback">
