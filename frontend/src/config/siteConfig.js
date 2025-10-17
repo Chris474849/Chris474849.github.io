@@ -24,7 +24,7 @@ export const siteConfig = reactive({
         title: 'Sesiones Fotográficas',
         description: 'Capturamos tu esencia con retratos profesionales para individuos, parejas y familias.',
         fullDescription: 'Nuestras sesiones fotográficas están diseñadas para capturar la verdadera esencia de cada persona. Trabajamos en ambientes relajados y naturales, ya sea en nuestro estudio profesional o en locaciones exteriores de tu elección.',
-        detailImage: 'https://via.placeholder.com/600x400/e67e22/ffffff?text=Sesion+Fotografica',
+        detailImage: '/retrato.jpg',
         duration: '1-3 horas',
         price: '$150 USD',
         idealFor: 'Individuos, parejas, familias',
@@ -83,32 +83,32 @@ export const siteConfig = reactive({
     images: [
       {
         id: 1,
-        url: 'https://www.pexels.com/search/portraits/?utm_source=chatgpt.com',
+        url: '/retrato.jpg',
         alt: 'Fotografía de retrato'
       },
       {
         id: 2,
-        url: 'https://via.placeholder.com/600x400/2c3e50/ffffff?text=Evento',
+        url: '/evento.jpg',
         alt: 'Fotografía de evento'
       },
       {
         id: 3,
-        url: 'https://via.placeholder.com/600x400/2c3e50/ffffff?text=Comercial',
+        url: '/comercial.jpg',
         alt: 'Fotografía comercial'
       },
       {
         id: 4,
-        url: 'https://via.placeholder.com/600x400/2c3e50/ffffff?text=Producto',
+        url: '/producto.jpg',
         alt: 'Fotografía de producto'
       },
       {
         id: 5,
-        url: 'https://via.placeholder.com/600x400/2c3e50/ffffff?text=Boda',
+        url: '/boda.jpg',
         alt: 'Fotografía de boda'
       },
       {
         id: 6,
-        url: 'https://via.placeholder.com/600x400/2c3e50/ffffff?text=Artística',
+        url: '/artistica.jpeg',
         alt: 'Fotografía artística'
       }
     ]
@@ -117,7 +117,7 @@ export const siteConfig = reactive({
   // Sección About
   about: {
     title: 'Sobre DY Prods',
-    image: 'https://via.placeholder.com/800x600/2c3e50/ffffff?text=Nuestro+Equipo',
+    image: '/equipo.jpeg',
     subtitle: 'Somos un equipo apasionado de fotógrafos y videógrafos comprometidos con la excelencia.',
     description: [
       'Fundado en 2015, DY Prods se ha convertido en uno de los estudios fotográficos más reconocidos de la región. Nuestro enfoque se centra en capturar la belleza auténtica en cada toma, ya sea para eventos personales, corporativos o proyectos creativos.',
