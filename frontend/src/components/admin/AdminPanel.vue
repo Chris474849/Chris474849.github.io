@@ -387,20 +387,34 @@
     
     <!-- Modal de confirmación -->
     <div v-if="showConfirmModal" class="modal d-block" tabindex="-1">
-      <div class="modal-dialog">
+    <div class="modal-dialog">
         <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title">Confirmar Acción</h5>
-          </div>
-          <div class="modal-body">
-            <p>¿Estás seguro de que deseas restaurar la configuración por defecto?</p>
-          </div>
-          <div class="modal-footer">
-            <button @click="showConfirmModal = false" class="btn btn-secondary">Cancelar</button>
-            <button @click="confirmReset" class="btn btn-warning">Restaurar</button>
-          </div>
+        <div class="modal-header">
+            <h5 class="modal-title">
+            {{ actionType.includes('delete') ? 'Confirmar Eliminación' : 'Confirmar Restauración' }}
+            </h5>
         </div>
-      </div>
+        <div class="modal-body">
+            <p>
+            {{
+                actionType === 'delete_service' ? '¿Deseas eliminar este servicio?'
+                : actionType === 'delete_contact_service' ? '¿Deseas eliminar este servicio del formulario de contacto?'
+                : actionType === 'delete_staff' ? '¿Deseas eliminar este miembro del personal?'
+                : '¿Deseas restaurar la configuración por defecto?'
+            }}
+            </p>
+        </div>
+        <div class="modal-footer">
+            <button @click="showConfirmModal = false" class="btn btn-secondary">Cancelar</button>
+            <button 
+            @click="confirmAction" 
+            :class="actionType.includes('delete') ? 'btn btn-danger' : 'btn btn-warning'"
+            >
+            {{ actionType.includes('delete') ? 'Eliminar' : 'Restaurar' }}
+            </button>
+        </div>
+        </div>
+    </div>
     </div>
     <div v-if="showConfirmModal" class="modal-backdrop show"></div>
     
@@ -431,6 +445,8 @@ const showToast = ref(false)
 const toastTitle = ref('')
 const toastMessage = ref('')
 const toastIcon = ref('')
+const pendingDeleteIndex = ref(null)
+const actionType = ref('') // <-- NUEVO: tipo de acción actual (delete_service, reset_defaults, etc.)
 
 const sections = [
   { id: 'general', name: 'General', icon: 'fas fa-cog' },
@@ -445,13 +461,17 @@ const sections = [
 ]
 
 onMounted(() => {
-  // Cargar configuración guardada si existe
   const saved = localStorage.getItem('siteConfig')
-  if (saved) {
-    const parsedConfig = JSON.parse(saved)
-    Object.assign(siteConfig, parsedConfig)
-  }
+  if (saved) Object.assign(siteConfig, JSON.parse(saved))
 })
+
+const showToastMessage = (title, message, icon) => {
+  toastTitle.value = title
+  toastMessage.value = message
+  toastIcon.value = icon
+  showToast.value = true
+  setTimeout(() => showToast.value = false, 3000)
+}
 
 const saveAllChanges = () => {
   saveSiteConfig()
@@ -459,31 +479,11 @@ const saveAllChanges = () => {
 }
 
 const resetToDefaults = () => {
+  pendingDeleteIndex.value = null
+  actionType.value = 'reset_defaults'
   showConfirmModal.value = true
 }
 
-const confirmReset = () => {
-  resetSiteConfig()
-  showConfirmModal.value = false
-  showToastMessage('Información', 'Configuración restaurada por defecto', 'fas fa-info-circle text-info')
-}
-
-const updatePhones = (value) => {
-  siteConfig.footer.contact.phones = value.split(',').map(phone => phone.trim())
-}
-
-const showToastMessage = (title, message, icon) => {
-  toastTitle.value = title
-  toastMessage.value = message
-  toastIcon.value = icon
-  showToast.value = true
-  
-  setTimeout(() => {
-    showToast.value = false
-  }, 3000)
-}
-
-// Funciones para servicios
 const addNewService = () => {
   const newId = Math.max(...siteConfig.services.items.map(s => s.id)) + 1
   siteConfig.services.items.push({
@@ -491,45 +491,31 @@ const addNewService = () => {
     icon: 'fas fa-star',
     title: 'Nuevo Servicio',
     description: 'Descripción del servicio',
-    fullDescription: 'Descripción completa del servicio con todos los detalles.',
+    fullDescription: 'Descripción completa del servicio.',
     detailImage: 'https://via.placeholder.com/600x400/e67e22/ffffff?text=Nuevo+Servicio',
     duration: '1-2 horas',
     price: '$100 USD',
     idealFor: 'Todo tipo de clientes',
-    includes: [
-      'Servicio profesional',
-      'Atención personalizada',
-      'Resultados de calidad'
-    ]
+    includes: ['Servicio profesional', 'Atención personalizada', 'Resultados de calidad']
   })
 }
 
 const removeService = (index) => {
-  if (confirm('¿Estás seguro de que deseas eliminar este servicio?')) {
-    siteConfig.services.items.splice(index, 1)
-  }
+  pendingDeleteIndex.value = index
+  actionType.value = 'delete_service'
+  showConfirmModal.value = true
 }
 
-const updateServiceIncludes = (serviceIndex, value) => {
-  const includes = value.split('\n').filter(item => item.trim() !== '')
-  siteConfig.services.items[serviceIndex].includes = includes
-}
-
-// Funciones para servicios de contacto
 const addNewContactService = () => {
-  siteConfig.contact.services.push({
-    value: 'nuevo-servicio',
-    label: 'Nuevo Servicio'
-  })
+  siteConfig.contact.services.push({ value: 'nuevo-servicio', label: 'Nuevo Servicio' })
 }
 
 const removeContactService = (index) => {
-  if (confirm('¿Estás seguro de que deseas eliminar este servicio del formulario?')) {
-    siteConfig.contact.services.splice(index, 1)
-  }
+  pendingDeleteIndex.value = index
+  actionType.value = 'delete_contact_service'
+  showConfirmModal.value = true
 }
 
-// Funciones para personal
 const addNewStaffMember = () => {
   const newId = Math.max(...siteConfig.contact.staff.map(s => s.id)) + 1
   siteConfig.contact.staff.push({
@@ -542,11 +528,48 @@ const addNewStaffMember = () => {
 }
 
 const removeStaffMember = (index) => {
-  if (confirm('¿Estás seguro de que deseas eliminar este miembro del personal?')) {
-    siteConfig.contact.staff.splice(index, 1)
+  pendingDeleteIndex.value = index
+  actionType.value = 'delete_staff'
+  showConfirmModal.value = true
+}
+
+const confirmAction = () => {
+  switch (actionType.value) {
+    case 'delete_service':
+      siteConfig.services.items.splice(pendingDeleteIndex.value, 1)
+      showToastMessage('Eliminado', 'El servicio fue eliminado correctamente.', 'fas fa-trash text-danger')
+      break
+
+    case 'delete_contact_service':
+      siteConfig.contact.services.splice(pendingDeleteIndex.value, 1)
+      showToastMessage('Eliminado', 'El servicio del formulario fue eliminado.', 'fas fa-trash text-danger')
+      break
+
+    case 'delete_staff':
+      siteConfig.contact.staff.splice(pendingDeleteIndex.value, 1)
+      showToastMessage('Eliminado', 'El miembro del personal fue eliminado.', 'fas fa-trash text-danger')
+      break
+
+    case 'reset_defaults':
+      resetSiteConfig()
+      showToastMessage('Restaurado', 'Configuración restaurada por defecto.', 'fas fa-info-circle text-info')
+      break
   }
+
+  pendingDeleteIndex.value = null
+  actionType.value = ''
+  showConfirmModal.value = false
+}
+
+const updateServiceIncludes = (serviceIndex, value) => {
+  siteConfig.services.items[serviceIndex].includes = value.split('\n').filter(item => item.trim())
+}
+
+const updatePhones = (value) => {
+  siteConfig.footer.contact.phones = value.split(',').map(p => p.trim())
 }
 </script>
+
 
 <style scoped>
 .card {
