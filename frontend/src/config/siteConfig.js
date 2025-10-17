@@ -184,8 +184,24 @@ export const siteConfig = reactive({
   }
 })
 
+// Función para sincronizar servicios automáticamente
+export const syncContactServices = () => {
+  // Crear opciones de servicios basadas en los servicios principales
+  const serviceOptions = siteConfig.services.items.map(service => ({
+    value: service.title.toLowerCase().replace(/\s+/g, '-').replace(/[áéíóúñü]/g, match => {
+      const accents = { 'á': 'a', 'é': 'e', 'í': 'i', 'ó': 'o', 'ú': 'u', 'ñ': 'n', 'ü': 'u' }
+      return accents[match] || match
+    }),
+    label: service.title
+  }))
+  
+  // Actualizar automáticamente los servicios del formulario de contacto
+  siteConfig.contact.services = serviceOptions
+}
+
 // Función para guardar configuración en localStorage
 export const saveSiteConfig = () => {
+  syncContactServices() // Sincronizar antes de guardar
   localStorage.setItem('siteConfig', JSON.stringify(siteConfig))
 }
 
@@ -196,6 +212,8 @@ export const loadSiteConfig = () => {
     const parsedConfig = JSON.parse(saved)
     Object.assign(siteConfig, parsedConfig)
   }
+  // Sincronizar servicios al cargar
+  syncContactServices()
 }
 
 // Función para resetear a configuración por defecto
