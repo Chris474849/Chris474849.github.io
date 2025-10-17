@@ -212,32 +212,25 @@
               <input v-model="siteConfig.contact.title" class="form-control" type="text">
             </div>
             
-            <div class="row">
-              <div class="col-md-6">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                  <h6>Servicios en el Formulario</h6>
-                  <button @click="addNewContactService" class="btn btn-success btn-sm">
-                    <i class="fas fa-plus me-1"></i>Agregar
-                  </button>
-                </div>
-                <div v-for="(service, index) in siteConfig.contact.services" :key="index" class="border p-3 mb-3 rounded position-relative">
-                  <button @click="removeContactService(index)" class="btn btn-danger btn-sm position-absolute" style="top: 10px; right: 10px;">
-                    <i class="fas fa-trash"></i>
-                  </button>
-                  <div class="row">
-                    <div class="col-12 mb-2">
-                      <label class="form-label">Valor</label>
-                      <input v-model="service.value" class="form-control" type="text">
-                    </div>
-                    <div class="col-12 mb-2">
-                      <label class="form-label">Etiqueta</label>
-                      <input v-model="service.label" class="form-control" type="text">
-                    </div>
-                  </div>
-                </div>
+            <div class="alert alert-info mb-4">
+              <i class="fas fa-info-circle me-2"></i>
+              <strong>Servicios del Formulario:</strong> Se sincronizan automáticamente con los servicios que agregues en la sección "Servicios".
+            </div>
+            
+            <div class="mb-4">
+              <h6 class="mb-3">Servicios Actuales en el Formulario:</h6>
+              <div class="d-flex flex-wrap gap-2">
+                <span v-for="service in siteConfig.contact.services" :key="service.value" class="badge bg-primary fs-6 p-2">
+                  {{ service.label }}
+                </span>
+                <span v-if="siteConfig.contact.services.length === 0" class="text-muted fst-italic">
+                  No hay servicios configurados
+                </span>
               </div>
-              
-              <div class="col-md-6">
+            </div>
+            
+            <div class="row">
+              <div class="col-12">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                   <h6>Personal Disponible</h6>
                   <button @click="addNewStaffMember" class="btn btn-success btn-sm">
@@ -422,7 +415,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import { siteConfig, saveSiteConfig, resetSiteConfig } from '@/config/siteConfig'
+import { siteConfig, saveSiteConfig, resetSiteConfig, syncContactServices } from '@/config/siteConfig'
 import AdminRequests from './AdminRequests.vue'
 
 const activeSection = ref('general')
@@ -483,6 +476,7 @@ const showToastMessage = (title, message, icon) => {
   }, 3000)
 }
 
+
 // Funciones para servicios
 const addNewService = () => {
   const newId = Math.max(...siteConfig.services.items.map(s => s.id)) + 1
@@ -502,11 +496,13 @@ const addNewService = () => {
       'Resultados de calidad'
     ]
   })
+  syncContactServices() // Sincronizar inmediatamente
 }
 
 const removeService = (index) => {
   if (confirm('¿Estás seguro de que deseas eliminar este servicio?')) {
     siteConfig.services.items.splice(index, 1)
+    syncContactServices() // Sincronizar inmediatamente
   }
 }
 
@@ -515,19 +511,6 @@ const updateServiceIncludes = (serviceIndex, value) => {
   siteConfig.services.items[serviceIndex].includes = includes
 }
 
-// Funciones para servicios de contacto
-const addNewContactService = () => {
-  siteConfig.contact.services.push({
-    value: 'nuevo-servicio',
-    label: 'Nuevo Servicio'
-  })
-}
-
-const removeContactService = (index) => {
-  if (confirm('¿Estás seguro de que deseas eliminar este servicio del formulario?')) {
-    siteConfig.contact.services.splice(index, 1)
-  }
-}
 
 // Funciones para personal
 const addNewStaffMember = () => {
