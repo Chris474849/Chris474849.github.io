@@ -1,0 +1,1836 @@
+/home/dannyf/Documents/University/PW/Chris474849.github.io/frontend/src/main.js
+/import { createApp } from 'vue'
+import App from './App.vue'
+
+// Bootstrap CSS
+import 'bootstrap/dist/css/bootstrap.min.css'
+// Bootstrap JavaScript
+import 'bootstrap/dist/js/bootstrap.bundle.min.js'
+
+createApp(App).mount('#app')
+
+/home/dannyf/Documents/University/PW/Chris474849.github.io/frontend/src/App.vue
+/<script setup>
+import NavBar from './components/NavBar.vue'
+import HeroSection from './components/HeroSection.vue'
+import ServicesSection from './components/ServicesSection.vue'
+import PortfolioSection from './components/PortfolioSection.vue'
+import AboutSection from './components/AboutSection.vue'
+import ContactSection from './components/ContactSection.vue'
+import FooterSection from './components/FooterSection.vue'
+</script>
+
+<template>
+  <div>
+    <NavBar />
+    <HeroSection />
+    <ServicesSection />
+    <PortfolioSection />
+    <AboutSection />
+    <ContactSection />
+    <FooterSection />
+  </div>
+</template>
+
+<style>
+:root {
+  --primary-color: #2c3e50;
+  --secondary-color: #e67e22;
+  --light-color: #ecf0f1;
+  --dark-color: #1a252f;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Montserrat', sans-serif;
+  color: var(--primary-color);
+  background-color: var(--light-color);
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+/* Mejoras para dispositivos muy pequeños */
+@media (max-width: 576px) {
+  .container {
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+  }
+
+  /* Reducir padding general en secciones */
+  section {
+    padding: 30px 0 !important;
+  }
+
+  /* Tamaños de texto optimizados */
+  h1 {
+    font-size: 1.8rem !important;
+    line-height: 1.2 !important;
+  }
+
+  h2 {
+    font-size: 1.5rem !important;
+    line-height: 1.3 !important;
+  }
+
+  h3 {
+    font-size: 1.3rem !important;
+  }
+
+  p, .lead {
+    font-size: 0.9rem !important;
+    line-height: 1.5 !important;
+  }
+
+  /* Botones más pequeños en mobile */
+  .btn {
+    padding: 8px 16px !important;
+    font-size: 0.9rem !important;
+  }
+
+  .btn-lg {
+    padding: 10px 20px !important;
+    font-size: 1rem !important;
+  }
+}
+
+@media (max-width: 400px) {
+  .container {
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+  }
+
+  section {
+    padding: 25px 0 !important;
+  }
+
+  h1 {
+    font-size: 1.6rem !important;
+  }
+
+  h2 {
+    font-size: 1.3rem !important;
+  }
+
+  p, .lead {
+    font-size: 0.85rem !important;
+  }
+
+  .btn {
+    padding: 6px 14px !important;
+    font-size: 0.85rem !important;
+  }
+
+  .btn-lg {
+    padding: 8px 18px !important;
+    font-size: 0.9rem !important;
+  }
+}
+
+/* Evitar scroll horizontal */
+.row {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
+.col, .col-*, [class*="col-"] {
+  padding-left: 8px !important;
+  padding-right: 8px !important;
+}
+
+@media (max-width: 576px) {
+  .col, .col-*, [class*="col-"] {
+    padding-left: 5px !important;
+    padding-right: 5px !important;
+  }
+}
+</style>
+
+
+/home/dannyf/Documents/University/PW/Chris474849.github.io/frontend/src/components/AboutSection.vue
+<template>
+  <section id="about" class="py-5">
+    <div class="container">
+      <div class="row align-items-center">
+        <div class="col-lg-6 mb-4 mb-lg-0">
+          <img
+            src="https://via.placeholder.com/800x600/2c3e50/ffffff?text=Nuestro+Equipo"
+            alt="Nuestro equipo"
+            class="img-fluid rounded"
+          >
+        </div>
+        <div class="col-lg-6">
+          <h2 class="section-title text-start">Sobre DY Prods</h2>
+          <p class="lead">
+            Somos un equipo apasionado de fotógrafos y videógrafos comprometidos con la excelencia.
+          </p>
+          <p>
+            Fundado en 2015, DY Prods se ha convertido en uno de los estudios fotográficos
+            más reconocidos de la región. Nuestro enfoque se centra en capturar la belleza
+            auténtica en cada toma, ya sea para eventos personales, corporativos o proyectos
+            creativos.
+          </p>
+          <p>
+            Trabajamos con equipos de última generación y técnicas innovadoras para
+            garantizar resultados excepcionales en cada proyecto.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+</template>
+
+<script setup>
+// No se necesita lógica adicional para este componente
+</script>
+
+<style scoped>
+section {
+  scroll-margin-top: 80px;
+}
+
+.section-title {
+  position: relative;
+  padding-bottom: 15px;
+  margin-bottom: 30px;
+}
+
+.section-title.text-start::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 50px;
+  height: 3px;
+  background-color: var(--secondary-color, #e67e22);
+}
+</style>
+
+/home/dannyf/Documents/University/PW/Chris474849.github.io/frontend/src/components/ContactSection.vue
+
+<template>
+  <section id="contact" class="py-5 bg-light">
+    <div class="container">
+      <h2 class="text-center section-title">Reserva tu Sesión</h2>
+      <div class="row justify-content-center">
+        <div class="col-lg-8">
+          <form @submit.prevent="submitForm" class="contact-form">
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label for="name" class="form-label">Nombre *</label>
+                <input
+                  type="text"
+                  :class="['form-control', { 'is-invalid': hasError('name') }]"
+                  id="name"
+                  v-model="formData.name"
+                  @blur="validateField('name')"
+                  @input="handleNameInput"
+                  @keypress="preventInvalidNameChars"
+                  required
+                >
+                <div v-if="hasError('name')" class="invalid-feedback">
+                  {{ errors.name }}
+                </div>
+              </div>
+              <div class="col-md-6">
+                <label for="email" class="form-label">Email *</label>
+                <input
+                  type="email"
+                  :class="['form-control', { 'is-invalid': hasError('email') }]"
+                  id="email"
+                  v-model="formData.email"
+                  @blur="validateField('email')"
+                  @input="hasAttemptedSubmit && validateField('email')"
+                  required
+                >
+                <div v-if="hasError('email')" class="invalid-feedback">
+                  {{ errors.email }}
+                </div>
+              </div>
+              <div class="col-md-6">
+                <label for="phone" class="form-label">Teléfono *</label>
+                <input
+                  type="tel"
+                  :class="['form-control', { 'is-invalid': hasError('phone') }]"
+                  id="phone"
+                  v-model="formData.phone"
+                  @blur="validateField('phone')"
+                  @input="hasAttemptedSubmit && validateField('phone')"
+                  required
+                >
+                <div v-if="hasError('phone')" class="invalid-feedback">
+                  {{ errors.phone }}
+                </div>
+              </div>
+              <div class="col-md-6">
+                <label for="service" class="form-label">Servicio *</label>
+                <select
+                  :class="['form-select', { 'is-invalid': hasError('service') }]"
+                  id="service"
+                  v-model="formData.service"
+                  @blur="validateField('service')"
+                  @change="validateField('service')"
+                  required
+                >
+                  <option value="" disabled>Selecciona un servicio</option>
+                  <option value="retrato">Fotografía de Retrato</option>
+                  <option value="evento">Fotografía de Evento</option>
+                  <option value="comercial">Fotografía Comercial</option>
+                  <option value="video">Videografía</option>
+                </select>
+                <div v-if="hasError('service')" class="invalid-feedback">
+                  {{ errors.service }}
+                </div>
+              </div>
+              <div class="col-12">
+                <label for="date" class="form-label">Fecha preferida *</label>
+                <input
+                  type="date"
+                  :class="['form-control', { 'is-invalid': hasError('date') }]"
+                  id="date"
+                  v-model="formData.date"
+                  @blur="validateField('date')"
+                  @change="validateField('date')"
+                  :min="new Date().toISOString().split('T')[0]"
+                  required
+                >
+                <div v-if="hasError('date')" class="invalid-feedback">
+                  {{ errors.date }}
+                </div>
+              </div>
+              <div class="col-12">
+                <label for="message" class="form-label">Mensaje *</label>
+                <textarea
+                  :class="['form-control', { 'is-invalid': hasError('message') }]"
+                  id="message"
+                  rows="5"
+                  v-model="formData.message"
+                  @blur="validateField('message')"
+                  @input="hasAttemptedSubmit && validateField('message')"
+                  placeholder="Cuéntanos más detalles sobre lo que necesitas..."
+                  required
+                ></textarea>
+                <div v-if="hasError('message')" class="invalid-feedback">
+                  {{ errors.message }}
+                </div>
+                <div class="form-text">
+                  {{ formData.message.length }}/500 caracteres
+                </div>
+              </div>
+              <div class="col-12 text-center mt-4">
+                <button
+                  type="submit"
+                  class="btn btn-primary btn-lg px-5"
+                  :disabled="isSubmitting"
+                >
+                  {{ isSubmitting ? 'Enviando...' : 'Enviar Solicitud' }}
+                </button>
+              </div>
+            </div>
+          </form>
+
+          <!-- Pop-up de éxito -->
+          <SuccessPopup
+            :is-visible="showSuccessPopup"
+            :message="successMessage"
+            :auto-close="6000"
+            @close="closeSuccessPopup"
+          />
+        </div>
+      </div>
+    </div>
+  </section>
+</template>
+
+<script setup>
+import { ref, reactive, onMounted } from 'vue'
+import SuccessPopup from './SuccessPopup.vue'
+
+const isSubmitting = ref(false)
+const hasAttemptedSubmit = ref(false)
+const showSuccessPopup = ref(false)
+const successMessage = ref('')
+
+const formData = reactive({
+  name: '',
+  email: '',
+  phone: '',
+  service: '',
+  date: '',
+  message: ''
+})
+
+// Reglas de validación
+const validationRules = {
+  name: (value) => {
+    if (!value || !value.trim()) return 'El nombre es obligatorio'
+    if (value.trim().length < 2) return 'El nombre debe tener al menos 2 caracteres'
+    if (value.length > 50) return 'El nombre no puede tener más de 50 caracteres'
+
+    // Verificar que no contenga números
+    if (/\d/.test(value)) {
+      return 'El nombre no puede contener números'
+    }
+
+    // Solo permitir letras (incluye acentos) y espacios
+    const allowedPattern = /^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+$/
+    if (!allowedPattern.test(value)) {
+      return 'El nombre solo puede contener letras y espacios'
+    }
+
+    // Verificar que no tenga espacios múltiples consecutivos
+    if (/\s{2,}/.test(value)) {
+      return 'El nombre no puede tener espacios múltiples consecutivos'
+    }
+
+    // Verificar que no empiece o termine con espacios
+    if (value !== value.trim()) {
+      return 'El nombre no puede empezar o terminar con espacios'
+    }
+
+    return null
+  },
+  email: (value) => {
+    if (!value || !value.trim()) return 'El email es obligatorio'
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRegex.test(value)) return 'Por favor ingresa un email válido'
+    return null
+  },
+  phone: (value) => {
+    if (!value || !value.trim()) return 'El teléfono es obligatorio'
+
+    // Limpiar el número de espacios para validación
+    const cleanPhone = value.replace(/\s/g, '')
+
+    // Validar formato de teléfono (permitir +, -, (), espacios y números)
+    const phoneRegex = /^[\d\s+()-]{8,15}$/
+    if (!phoneRegex.test(value)) {
+      return 'Por favor ingresa un teléfono válido (8-15 dígitos)'
+    }
+
+    // Verificar que tenga al menos 8 dígitos
+    const digitCount = cleanPhone.replace(/[^\d]/g, '').length
+    if (digitCount < 8) {
+      return 'El teléfono debe tener al menos 8 dígitos'
+    }
+
+    return null
+  },
+  service: (value) => {
+    if (!value) return 'Seleccionar un servicio es obligatorio'
+    return null
+  },
+  date: (value) => {
+    if (!value) return 'Seleccionar una fecha es obligatorio'
+    const selectedDate = new Date(value)
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
+    if (selectedDate < today) return 'La fecha debe ser posterior al dia de hoy'
+    return null
+  },
+  message: (value) => {
+    if (!value || !value.trim()) return 'El mensaje es obligatorio'
+    if (value.trim().length < 10) return 'El mensaje debe tener al menos 10 caracteres'
+    if (value.length > 500) return 'El mensaje no puede tener más de 500 caracteres'
+    return null
+  }
+}
+
+// Errores de validación
+const errors = reactive({})
+
+// Validar campo individual
+const validateField = (fieldName) => {
+  const error = validationRules[fieldName](formData[fieldName])
+  if (error) {
+    errors[fieldName] = error
+    hasAttemptedSubmit.value = true // Marcar que ya se intentó validar
+  } else {
+    delete errors[fieldName]
+  }
+  return !error
+}
+
+// Validar todos los campos
+const validateForm = () => {
+  let isValid = true
+  Object.keys(validationRules).forEach(field => {
+    if (!validateField(field)) {
+      isValid = false
+    }
+  })
+  return isValid
+}
+
+// Función para verificar si un campo tiene error
+const hasError = (fieldName) => {
+  return hasAttemptedSubmit.value && !!errors[fieldName]
+}
+
+// Escuchar eventos de pre-selección de servicio
+onMounted(() => {
+  window.addEventListener('preselect-service', (event) => {
+    formData.service = event.detail.service
+    if (event.detail.message) {
+      formData.message = event.detail.message
+    }
+    // Limpiar errores si se pre-rellena
+    if (hasAttemptedSubmit.value) {
+      validateField('service')
+      if (event.detail.message) {
+        validateField('message')
+      }
+    }
+  })
+})
+
+const submitForm = async () => {
+  hasAttemptedSubmit.value = true
+
+  // Validar todo el formulario
+  if (!validateForm()) {
+    // Si hay errores, hacer scroll al primer campo con error
+    const firstErrorField = Object.keys(errors)[0]
+    if (firstErrorField) {
+      const element = document.getElementById(firstErrorField)
+      if (element) {
+        element.focus()
+        element.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      }
+    }
+    return
+  }
+
+  isSubmitting.value = true
+
+  // Simular envío de formulario (como en el original)
+  setTimeout(() => {
+    // Mostrar pop-up de éxito
+    successMessage.value = `¡Gracias ${formData.name}! Tu solicitud ha sido recibida exitosamente. Te contactaremos pronto a ${formData.email} para confirmar tu reserva de ${formData.service}.`
+    showSuccessPopup.value = true
+
+    // Limpiar el formulario y estados
+    Object.keys(formData).forEach(key => {
+      formData[key] = ''
+    })
+    Object.keys(errors).forEach(key => {
+      delete errors[key]
+    })
+    hasAttemptedSubmit.value = false
+    isSubmitting.value = false
+  }, 1000)
+}
+
+// Función para cerrar el pop-up de éxito
+const closeSuccessPopup = () => {
+  showSuccessPopup.value = false
+  successMessage.value = ''
+}
+
+// Prevenir caracteres inválidos en el nombre durante la escritura
+const preventInvalidNameChars = (event) => {
+  const char = event.key
+
+  // Permitir teclas de control (backspace, delete, tab, escape, enter, etc.)
+  if (event.ctrlKey || event.altKey || event.metaKey) {
+    return true
+  }
+
+  // Permitir teclas especiales (flechas, home, end, etc.)
+  if (event.key.length > 1) {
+    return true
+  }
+
+  // Solo permitir letras (incluye acentos) y espacios
+  const allowedChars = /^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]$/
+  if (!allowedChars.test(char)) {
+    event.preventDefault()
+    return false
+  }
+
+  return true
+}
+
+// Manejar input del nombre con validación adicional
+const handleNameInput = (event) => {
+  let value = event.target.value
+
+  // Limpiar caracteres no permitidos que puedan haber pasado
+  value = value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]/g, '')
+
+  // Prevenir espacios múltiples consecutivos
+  value = value.replace(/\s{2,}/g, ' ')
+
+  // Actualizar el valor
+  formData.name = value
+
+  // Validar si ya se intentó enviar el formulario
+  if (hasAttemptedSubmit.value) {
+    validateField('name')
+  }
+}
+</script>
+
+<style scoped>
+section {
+  scroll-margin-top: 80px;
+}
+
+.section-title {
+  position: relative;
+  padding-bottom: 15px;
+  margin-bottom: 30px;
+}
+
+.section-title::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 50px;
+  height: 3px;
+  background-color: var(--secondary-color, #e67e22);
+}
+
+.contact-form {
+  background: white;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.btn-primary {
+  background-color: var(--secondary-color, #e67e22);
+  border-color: var(--secondary-color, #e67e22);
+}
+
+.btn-primary:hover {
+  background-color: #d35400;
+  border-color: #d35400;
+}
+
+/* Estilos para campos con error - Reforzados */
+.is-invalid,
+.form-control.is-invalid,
+.form-select.is-invalid {
+  border: 2px solid #dc3545 !important;
+  border-color: #dc3545 !important;
+  box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25) !important;
+  animation: shake 0.5s ease-in-out;
+  background-image: none !important;
+  background-color: rgba(220, 53, 69, 0.05) !important;
+}
+
+.form-control.is-invalid:focus,
+.form-select.is-invalid:focus {
+  border-color: #dc3545 !important;
+  box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25) !important;
+  outline: none;
+}
+
+/* Asegurar que el estilo se aplique incluso con validación HTML5 */
+.form-control:invalid.is-invalid,
+.form-select:invalid.is-invalid {
+  border-color: #dc3545 !important;
+}
+
+.form-control:valid.is-invalid,
+.form-select:valid.is-invalid {
+  border-color: #dc3545 !important;
+}
+
+.invalid-feedback {
+  display: block;
+  font-size: 0.875rem;
+  color: #dc3545;
+  font-weight: 500;
+  margin-top: 0.25rem;
+}
+
+/* Animación de shake para campos inválidos */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-2px); }
+  20%, 40%, 60%, 80% { transform: translateX(2px); }
+}
+
+/* Estilos para campos válidos */
+.form-control:valid:not(:placeholder-shown),
+.form-select:valid:not([value=""]) {
+  border-color: #28a745;
+}
+
+.form-control:valid:not(:placeholder-shown):focus,
+.form-select:valid:not([value=""]):focus {
+  border-color: #28a745;
+  box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+}
+
+/* Contador de caracteres */
+.form-text {
+  font-size: 0.8rem;
+  color: #6c757d;
+  margin-top: 0.25rem;
+}
+
+/* Labels obligatorios */
+.form-label {
+  font-weight: 600;
+  color: var(--primary-color, #2c3e50);
+  margin-bottom: 0.5rem;
+}
+
+/* Botón deshabilitado durante envío */
+.btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* Transiciones suaves */
+.form-control, .form-select {
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Mejoras de responsividad para dispositivos pequeños */
+@media (max-width: 576px) {
+  .contact-form {
+    padding: 20px 15px !important;
+    margin: 0 5px;
+  }
+
+  .section-title {
+    font-size: 1.4rem !important;
+    margin-bottom: 20px !important;
+  }
+
+  .form-label {
+    font-size: 0.9rem !important;
+    margin-bottom: 0.3rem !important;
+  }
+
+  .form-control, .form-select {
+    font-size: 0.9rem !important;
+    padding: 10px 12px !important;
+  }
+
+  textarea.form-control {
+    min-height: 100px !important;
+  }
+
+  .btn-lg {
+    width: 100% !important;
+    margin-top: 15px !important;
+  }
+
+  .invalid-feedback {
+    font-size: 0.8rem !important;
+  }
+
+  .form-text {
+    font-size: 0.75rem !important;
+  }
+}
+
+@media (max-width: 400px) {
+  .contact-form {
+    padding: 15px 10px !important;
+  }
+
+  .section-title {
+    font-size: 1.2rem !important;
+  }
+
+  .form-control, .form-select {
+    font-size: 0.85rem !important;
+    padding: 8px 10px !important;
+  }
+
+  .form-label {
+    font-size: 0.85rem !important;
+  }
+}
+</style>
+
+/home/dannyf/Documents/University/PW/Chris474849.github.io/frontend/src/components/FooterSection.vue
+
+<template>
+  <footer>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-4 mb-4 mb-lg-0">
+          <h3 class="h5 mb-4">DY Prods</h3>
+          <p>Tu estudio fotográfico de confianza para capturar los momentos más importantes de tu vida.</p>
+          <div class="social-icons">
+            <a href="#" class="social-link facebook" aria-label="Facebook">
+              <i class="fab fa-facebook-f"></i>
+            </a>
+            <a
+              href="https://www.instagram.com/DY_Prods/"
+              @click="openInstagram"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="social-link instagram"
+              aria-label="Instagram"
+            >
+              <i class="fab fa-instagram"></i>
+            </a>
+            <a href="#" class="social-link twitter" aria-label="Twitter">
+              <i class="fab fa-twitter"></i>
+            </a>
+            <a href="#" class="social-link linkedin" aria-label="LinkedIn">
+              <i class="fab fa-linkedin-in"></i>
+            </a>
+          </div>
+        </div>
+        <div class="col-lg-4 mb-4 mb-lg-0">
+          <h3 class="h5 mb-4">Contacto</h3>
+          <div class="contact-info">
+            <a
+              href="https://wa.me/5356601651"
+              class="contact-link whatsapp"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Contactar por WhatsApp +53 56601651"
+            >
+              <i class="fab fa-whatsapp me-2"></i> +53 56601651
+            </a>
+            <a
+              href="https://wa.me/5355494545"
+              class="contact-link whatsapp"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Contactar por WhatsApp +53 55494545"
+            >
+              <i class="fab fa-whatsapp me-2"></i> +53 55494545
+            </a>
+            <a
+              href="mailto:dyprods0581@gmail.com"
+              class="contact-link email"
+              aria-label="Enviar email a dyprods0581@gmail.com"
+            >
+              <i class="fas fa-envelope me-2"></i> dyprods0581@gmail.com
+            </a>
+          </div>
+        </div>
+        <div class="col-lg-4">
+          <h3 class="h5 mb-4">Horario</h3>
+          <p>Lunes a Viernes: 9:00 AM - 6:00 PM</p>
+          <p>Sábados: 10:00 AM - 3:00 PM</p>
+          <p>Domingos: Cerrado</p>
+        </div>
+      </div>
+      <hr class="my-4 bg-light">
+      <div class="text-center">
+        <p class="mb-0">&copy; 2025 DY Prods. Todos los derechos reservados.</p>
+      </div>
+    </div>
+  </footer>
+</template>
+
+<script setup>
+const openInstagram = (event) => {
+  // Detecta si es un dispositivo móvil
+  const esMovil = /Android|webOS|iPhone|iPad|iPod|blackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+
+  if (esMovil) {
+    event.preventDefault() // evitar abrir el enlace web inmediatamente
+    window.location.href = "instagram://user?username=DY_Prods" // Intenta abrir la aplicación
+
+    // Si la app no está instalada, redirige al enlace web después de un tiempo
+    setTimeout(() => {
+      window.location.href = "https://www.instagram.com/DY_Prods/"
+    }, 500)
+  }
+}
+</script>
+
+<style scoped>
+footer {
+  background-color: var(--dark-color, #1a252f);
+  color: white;
+  padding: 50px 0;
+}
+
+/* Redes sociales */
+.social-icons {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.social-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 45px;
+  height: 45px;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  font-size: 1.3rem;
+  border-radius: 50%;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.social-link::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 50%;
+  transform: scale(0);
+  transition: transform 0.3s ease;
+  z-index: 1;
+}
+
+.social-link i {
+  position: relative;
+  z-index: 2;
+}
+
+/* Hover effects con colores específicos de cada red social */
+.social-link.facebook:hover {
+  color: white;
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(24, 119, 242, 0.4);
+}
+
+.social-link.facebook::before {
+  background: #1877f2;
+}
+
+.social-link.facebook:hover::before {
+  transform: scale(1);
+}
+
+.social-link.instagram:hover {
+  color: white;
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(225, 48, 108, 0.4);
+}
+
+.social-link.instagram::before {
+  background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+}
+
+.social-link.instagram:hover::before {
+  transform: scale(1);
+}
+
+.social-link.twitter:hover {
+  color: white;
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(29, 161, 242, 0.4);
+}
+
+.social-link.twitter::before {
+  background: #1da1f2;
+}
+
+.social-link.twitter:hover::before {
+  transform: scale(1);
+}
+
+.social-link.linkedin:hover {
+  color: white;
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(0, 119, 181, 0.4);
+}
+
+.social-link.linkedin::before {
+  background: #0077b5;
+}
+
+.social-link.linkedin:hover::before {
+  transform: scale(1);
+}
+
+/* Información de contacto */
+.contact-info {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.contact-link {
+  color: white;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.contact-link:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateX(5px);
+  color: white;
+}
+
+.contact-link.whatsapp:hover {
+  background: #25d366;
+  color: white;
+}
+
+.contact-link.email:hover {
+  background: var(--secondary-color, #e67e22);
+  color: white;
+}
+
+.contact-link i {
+  font-size: 1.1rem;
+  width: 20px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  footer {
+    padding: 30px 0;
+  }
+
+  .social-icons {
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+
+  .contact-info {
+    text-align: center;
+  }
+
+  .social-link {
+    width: 40px;
+    height: 40px;
+    font-size: 1.2rem;
+  }
+}
+
+@media (max-width: 576px) {
+  footer {
+    padding: 25px 0;
+  }
+
+  .social-link {
+    width: 38px;
+    height: 38px;
+    font-size: 1.1rem;
+  }
+
+  .contact-link {
+    padding: 6px 10px;
+    font-size: 0.9rem;
+  }
+
+  h3.h5 {
+    font-size: 1.1rem !important;
+    margin-bottom: 15px !important;
+  }
+}
+</style>
+
+/home/dannyf/Documents/University/PW/Chris474849.github.io/frontend/src/components/HeroSection.vue
+
+<template>
+  <section id="home" class="hero-section">
+    <div class="container text-center">
+      <h1 class="display-3 fw-bold mb-4">DY Prods</h1>
+      <h2 class="h3 mb-5">Capturando momentos, creando recuerdos</h2>
+      <a href="#contact" @click="scrollToContact" class="btn btn-primary btn-lg px-5 py-3">
+        Reserva ahora
+      </a>
+    </div>
+  </section>
+</template>
+
+<script setup>
+const scrollToContact = (event) => {
+  event.preventDefault()
+  const target = document.querySelector('#contact')
+  if (target) {
+    target.scrollIntoView({
+      behavior: 'smooth',
+      block: 'start'
+    })
+  }
+}
+</script>
+
+<style scoped>
+.hero-section {
+  min-height: 100vh;
+  background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
+              url('https://via.placeholder.com/1920x1080/2c3e50/ffffff?text=DY+Prods') no-repeat center center/cover;
+  display: flex;
+  align-items: center;
+  color: white;
+}
+
+section {
+  scroll-margin-top: 80px;
+}
+
+.btn-primary {
+  background-color: var(--secondary-color, #e67e22);
+  border-color: var(--secondary-color, #e67e22);
+}
+
+.btn-primary:hover {
+  background-color: #d35400;
+  border-color: #d35400;
+}
+</style>
+
+/home/dannyf/Documents/University/PW/Chris474849.github.io/frontend/src/components/NavBar.vue
+
+<template>
+  <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+    <div class="container">
+      <a class="navbar-brand" href="#home">DY Prods</a>
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-bs-toggle="collapse"
+        data-bs-target="#navbarNav"
+        aria-controls="navbarNav"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="#home" @click="scrollToSection">Inicio</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#services" @click="scrollToSection">Servicios</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#portfolio" @click="scrollToSection">Portafolio</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#about" @click="scrollToSection">Nosotros</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#contact" @click="scrollToSection">Contacto</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+</template>
+
+<script setup>
+const scrollToSection = (event) => {
+  event.preventDefault()
+  const target = document.querySelector(event.target.getAttribute('href'))
+  if (target) {
+    target.scrollIntoView({
+      behavior: 'smooth',
+      block: 'start'
+    })
+  }
+}
+</script>
+
+<style scoped>
+.navbar {
+  background-color: var(--primary-color, #2c3e50);
+}
+</style>
+
+/home/dannyf/Documents/University/PW/Chris474849.github.io/frontend/src/components/PortfolioSection.vue
+
+<template>
+  <section id="portfolio" class="py-5 bg-light">
+    <div class="container">
+      <h2 class="text-center section-title">Nuestro Portafolio</h2>
+      <div class="row g-4">
+        <div class="col-md-4" v-for="image in portfolioImages" :key="image.id">
+          <img
+            :src="image.src"
+            :alt="image.alt"
+            class="img-fluid gallery-img rounded"
+            @click="openImage(image)"
+          >
+        </div>
+      </div>
+    </div>
+  </section>
+</template>
+
+<script setup>
+import { ref } from 'vue'
+
+const portfolioImages = ref([
+  {
+    id: 1,
+    src: 'https://via.placeholder.com/600x400/e67e22/ffffff?text=Retrato',
+    alt: 'Fotografía de retrato'
+  },
+  {
+    id: 2,
+    src: 'https://via.placeholder.com/600x400/2c3e50/ffffff?text=Evento',
+    alt: 'Fotografía de evento'
+  },
+  {
+    id: 3,
+    src: 'https://via.placeholder.com/600x400/e67e22/ffffff?text=Comercial',
+    alt: 'Fotografía comercial'
+  },
+  {
+    id: 4,
+    src: 'https://via.placeholder.com/600x400/2c3e50/ffffff?text=Producto',
+    alt: 'Fotografía de producto'
+  },
+  {
+    id: 5,
+    src: 'https://via.placeholder.com/600x400/e67e22/ffffff?text=Boda',
+    alt: 'Fotografía de boda'
+  },
+  {
+    id: 6,
+    src: 'https://via.placeholder.com/600x400/2c3e50/ffffff?text=Arte',
+    alt: 'Fotografía artística'
+  }
+])
+
+const openImage = (image) => {
+  // En una implementación futura, aquí se puede abrir un modal o lightbox
+  console.log('Abriendo imagen:', image.alt)
+}
+</script>
+
+<style scoped>
+section {
+  scroll-margin-top: 80px;
+}
+
+.section-title {
+  position: relative;
+  padding-bottom: 15px;
+  margin-bottom: 30px;
+}
+
+.section-title::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 50px;
+  height: 3px;
+  background-color: var(--secondary-color, #e67e22);
+}
+
+.gallery-img {
+  height: 250px;
+  object-fit: cover;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.gallery-img:hover {
+  opacity: 0.8;
+}
+</style>
+
+/home/dannyf/Documents/University/PW/Chris474849.github.io/frontend/src/components/ServicesSection.vue
+
+<template>
+  <section id="services" class="py-5">
+    <div class="container">
+      <h2 class="text-center section-title">Nuestros Servicios</h2>
+      <div class="row">
+        <div class="col-md-4" v-for="service in services" :key="service.id">
+          <div class="card text-center p-4 service-card" @click="openServiceModal(service)">
+            <div class="service-icon">
+              <i :class="service.icon"></i>
+            </div>
+            <h3 class="h4">{{ service.title }}</h3>
+            <p>{{ service.description }}</p>
+            <div class="service-overlay">
+              <i class="fas fa-info-circle"></i>
+              <span>Ver detalles</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal para mostrar detalles del servicio -->
+    <div
+      class="modal fade"
+      id="serviceModal"
+      tabindex="-1"
+      aria-labelledby="serviceModalLabel"
+      aria-hidden="true"
+      ref="serviceModal"
+    >
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="serviceModalLabel">
+              <i :class="selectedService?.icon" class="me-2"></i>
+              {{ selectedService?.title }}
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body" v-if="selectedService">
+            <div class="row">
+              <div class="col-md-6">
+                <img
+                  :src="selectedService.detailImage"
+                  :alt="selectedService.title"
+                  class="img-fluid rounded mb-3"
+                >
+              </div>
+              <div class="col-md-6">
+                <h6 class="text-primary mb-3">Descripción detallada</h6>
+                <p>{{ selectedService.fullDescription }}</p>
+
+                <h6 class="text-primary mb-2">¿Qué incluye?</h6>
+                <ul class="list-unstyled">
+                  <li v-for="item in selectedService.includes" :key="item" class="mb-1">
+                    <i class="fas fa-check text-success me-2"></i>{{ item }}
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="row mt-4">
+              <div class="col-md-4">
+                <div class="service-detail-card">
+                  <i class="fas fa-clock text-primary"></i>
+                  <h6>Duración</h6>
+                  <p>{{ selectedService.duration }}</p>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="service-detail-card">
+                  <i class="fas fa-dollar-sign text-primary"></i>
+                  <h6>Desde</h6>
+                  <p>{{ selectedService.price }}</p>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="service-detail-card">
+                  <i class="fas fa-users text-primary"></i>
+                  <h6>Ideal para</h6>
+                  <p>{{ selectedService.idealFor }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+              Cerrar
+            </button>
+            <button
+              type="button"
+              class="btn btn-primary"
+              @click="contactService"
+              data-bs-dismiss="modal"
+            >
+              <i class="fas fa-envelope me-2"></i>Solicitar cotización
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</template>
+
+<script setup>
+import { ref } from 'vue'
+import { Modal } from 'bootstrap'
+
+const selectedService = ref(null)
+const serviceModal = ref(null)
+
+const services = ref([
+  {
+    id: 1,
+    icon: 'fas fa-camera',
+    title: 'Sesiones Fotográficas',
+    description: 'Capturamos tu esencia con retratos profesionales para individuos, parejas y familias.',
+    fullDescription: 'Nuestras sesiones fotográficas están diseñadas para capturar la verdadera esencia de cada persona. Trabajamos en ambientes relajados y naturales, ya sea en nuestro estudio profesional o en locaciones exteriores de tu elección.',
+    detailImage: 'https://via.placeholder.com/600x400/e67e22/ffffff?text=Sesion+Fotografica',
+    duration: '1-3 horas',
+    price: '$150 USD',
+    idealFor: 'Individuos, parejas, familias',
+    includes: [
+      'Sesión fotográfica completa',
+      'Edición profesional de imágenes',
+      '20-30 fotos en alta resolución',
+      'Galería online privada',
+      'Consulta previa de styling'
+    ]
+  },
+  {
+    id: 2,
+    icon: 'fas fa-film',
+    title: 'Videografía',
+    description: 'Inmortalizamos tus eventos importantes con videos de alta calidad y edición profesional.',
+    fullDescription: 'Creamos videos cinematográficos que cuentan tu historia de manera única. Desde eventos corporativos hasta celebraciones familiares, capturamos cada momento importante con equipo profesional 4K.',
+    detailImage: 'https://via.placeholder.com/600x400/2c3e50/ffffff?text=Videografia',
+    duration: '2-8 horas',
+    price: '$300 USD',
+    idealFor: 'Eventos, bodas, corporativos',
+    includes: [
+      'Grabación en 4K',
+      'Audio profesional',
+      'Edición cinematográfica',
+      'Video final de 3-10 minutos',
+      'Material en bruto incluido',
+      'Música libre de derechos'
+    ]
+  },
+  {
+    id: 3,
+    icon: 'fas fa-building',
+    title: 'Fotografía Comercial',
+    description: 'Elevamos tu marca con fotografía profesional para productos, servicios y espacios.',
+    fullDescription: 'Especializados en fotografía comercial que hace que tu negocio destaque. Desde productos e-commerce hasta retratos corporativos, creamos imágenes que impulsan tu marca.',
+    detailImage: 'https://via.placeholder.com/600x400/e67e22/ffffff?text=Comercial',
+    duration: '2-4 horas',
+    price: '$250 USD',
+    idealFor: 'Empresas, productos, marcas',
+    includes: [
+      'Fotografía de productos',
+      'Retratos corporativos',
+      'Fotografía de espacios',
+      'Edición profesional',
+      'Formatos optimizados para web',
+      'Derechos comerciales incluidos'
+    ]
+  }
+])
+
+const openServiceModal = (service) => {
+  selectedService.value = service
+  const modal = new Modal(serviceModal.value)
+  modal.show()
+}
+
+const contactService = () => {
+  if (selectedService.value) {
+    // Mapear el servicio al valor del select
+    const serviceMap = {
+      'Sesiones Fotográficas': 'retrato',
+      'Videografía': 'video',
+      'Fotografía Comercial': 'comercial'
+    }
+
+    // Crear mensaje personalizado con información del servicio
+    const message = `Hola! Estoy interesado/a en el servicio de ${selectedService.value.title}. Me gustaría conocer más detalles sobre los precios y disponibilidad. Gracias!`
+
+    // Enviar evento personalizado para pre-rellenar el formulario
+    window.dispatchEvent(new CustomEvent('preselect-service', {
+      detail: {
+        service: serviceMap[selectedService.value.title] || '',
+        message: message
+      }
+    }))
+
+    // Navegar al formulario de contacto
+    const contactSection = document.querySelector('#contact')
+    if (contactSection) {
+      contactSection.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
+      })
+    }
+  }
+}
+</script>
+
+<style scoped>
+section {
+  scroll-margin-top: 80px;
+}
+
+.section-title {
+  position: relative;
+  padding-bottom: 15px;
+  margin-bottom: 30px;
+}
+
+.section-title::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 50px;
+  height: 3px;
+  background-color: var(--secondary-color, #e67e22);
+}
+
+.card {
+  transition: all 0.3s ease;
+  margin-bottom: 20px;
+  border: none;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.service-card {
+  cursor: pointer;
+}
+
+.service-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+.service-card:hover .service-overlay {
+  opacity: 1;
+  visibility: visible;
+}
+
+.service-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(44, 62, 80, 0.9), rgba(230, 126, 34, 0.9));
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+  color: white;
+}
+
+.service-overlay i {
+  font-size: 2rem;
+  margin-bottom: 10px;
+}
+
+.service-overlay span {
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+.service-icon {
+  font-size: 3rem;
+  color: var(--secondary-color, #e67e22);
+  margin-bottom: 15px;
+  transition: transform 0.3s ease;
+}
+
+.service-card:hover .service-icon {
+  transform: scale(1.1);
+}
+
+.service-detail-card {
+  text-align: center;
+  padding: 20px;
+  border-radius: 10px;
+  background: #f8f9fa;
+  margin-bottom: 15px;
+}
+
+.service-detail-card i {
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+}
+
+.service-detail-card h6 {
+  font-weight: 600;
+  margin-bottom: 5px;
+  color: var(--primary-color, #2c3e50);
+}
+
+.service-detail-card p {
+  margin-bottom: 0;
+  font-weight: 500;
+}
+
+.modal-header {
+  background: linear-gradient(135deg, var(--primary-color, #2c3e50), var(--secondary-color, #e67e22));
+  color: white;
+}
+
+.modal-header .btn-close {
+  filter: brightness(0) invert(1);
+}
+
+.btn-primary {
+  background-color: var(--secondary-color, #e67e22);
+  border-color: var(--secondary-color, #e67e22);
+}
+
+.btn-primary:hover {
+  background-color: #d35400;
+  border-color: #d35400;
+}
+</style>
+
+/home/dannyf/Documents/University/PW/Chris474849.github.io/frontend/src/components/SuccessPopup.vue
+
+<template>
+  <div v-if="isVisible" class="popup-overlay" @click="closePopup">
+    <div class="popup-container" @click.stop>
+      <div class="popup-header">
+        <div class="success-icon">
+          <i class="fas fa-check-circle"></i>
+        </div>
+        <button class="close-btn" @click="closePopup" aria-label="Cerrar">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="popup-content">
+        <h3 class="popup-title">¡Mensaje Enviado!</h3>
+        <p class="popup-message">{{ message }}</p>
+      </div>
+      <div class="popup-footer">
+        <button class="btn btn-primary" @click="closePopup">
+          Entendido
+        </button>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script setup>
+import { watch } from 'vue'
+
+const props = defineProps({
+  isVisible: {
+    type: Boolean,
+    default: false
+  },
+  message: {
+    type: String,
+    default: '¡Tu solicitud ha sido recibida exitosamente!'
+  },
+  autoClose: {
+    type: Number,
+    default: 5000 // Auto cerrar en 5 segundos
+  }
+})
+
+const emit = defineEmits(['close'])
+
+let autoCloseTimer = null
+
+const closePopup = () => {
+  if (autoCloseTimer) {
+    clearTimeout(autoCloseTimer)
+    autoCloseTimer = null
+  }
+  emit('close')
+}
+
+// Auto cerrar después del tiempo especificado
+watch(() => props.isVisible, (newVal) => {
+  if (newVal && props.autoClose > 0) {
+    autoCloseTimer = setTimeout(() => {
+      closePopup()
+    }, props.autoClose)
+  }
+})
+
+// Cerrar con tecla Escape
+const handleKeydown = (event) => {
+  if (event.key === 'Escape' && props.isVisible) {
+    closePopup()
+  }
+}
+
+// Agregar/remover event listener cuando el popup esté visible
+watch(() => props.isVisible, (newVal) => {
+  if (newVal) {
+    document.addEventListener('keydown', handleKeydown)
+    // Prevenir scroll en el body
+    document.body.style.overflow = 'hidden'
+  } else {
+    document.removeEventListener('keydown', handleKeydown)
+    document.body.style.overflow = ''
+  }
+})
+</script>
+
+<style scoped>
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.popup-container {
+  background: white;
+  border-radius: 15px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  max-width: 500px;
+  width: 90%;
+  max-height: 90vh;
+  overflow: hidden;
+  animation: slideIn 0.3s ease-out;
+  position: relative;
+}
+
+.popup-header {
+  background: linear-gradient(135deg, #28a745, #20c997);
+  color: white;
+  padding: 20px;
+  text-align: center;
+  position: relative;
+}
+
+.success-icon {
+  font-size: 3rem;
+  margin-bottom: 10px;
+  animation: bounceIn 0.6s ease-out;
+}
+
+.close-btn {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: white;
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 1.1rem;
+}
+
+.close-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: rotate(90deg);
+}
+
+.popup-content {
+  padding: 30px;
+  text-align: center;
+}
+
+.popup-title {
+  color: var(--primary-color, #2c3e50);
+  margin-bottom: 15px;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.popup-message {
+  color: #666;
+  line-height: 1.6;
+  margin-bottom: 0;
+  font-size: 1rem;
+}
+
+.popup-footer {
+  padding: 0 30px 30px;
+  text-align: center;
+}
+
+.btn-primary {
+  background-color: var(--secondary-color, #e67e22);
+  border-color: var(--secondary-color, #e67e22);
+  padding: 12px 30px;
+  border-radius: 25px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  border: none;
+  cursor: pointer;
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: #d35400;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(230, 126, 34, 0.4);
+}
+
+/* Animaciones */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9) translateY(-50px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes bounceIn {
+  0% {
+    transform: scale(0);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Responsive */
+@media (max-width: 576px) {
+  .popup-container {
+    margin: 20px;
+    width: calc(100% - 40px);
+  }
+
+  .popup-content {
+    padding: 20px;
+  }
+
+  .popup-title {
+    font-size: 1.3rem;
+  }
+
+  .success-icon {
+    font-size: 2.5rem;
+  }
+}
+</style>
