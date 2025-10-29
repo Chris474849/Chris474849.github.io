@@ -1,6 +1,16 @@
 <template>
   <div class="card shadow p-4">
-    <h4 class="mb-3">Gestión de Solicitudes</h4>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h4 class="mb-0">Gestión de Solicitudes</h4>
+      <div class="d-flex gap-2">
+        <button class="btn btn-outline-primary" @click="refreshRequests">
+          <i class="fas fa-sync-alt me-2"></i> Refrescar
+        </button>
+        <button class="btn btn-success" @click="openCreateModal">
+          <i class="fas fa-plus me-2"></i> Crear Solicitud
+        </button>
+      </div>
+    </div>
 
     <table class="table table-striped align-middle">
       <thead class="table-dark">
@@ -81,6 +91,18 @@
       </div>
     </div>
 
+    <!-- Modal Crear Solicitud -->
+    <div v-if="showCreateModal" class="custom-modal-overlay" @click.self="closeCreateModal">
+      <div class="custom-modal large">
+        <div class="modal-content">
+          <button class="close-btn" @click="closeCreateModal">✖</button>
+          <h3>Crear nueva solicitud</h3>
+
+          <ServiceRequestForm :onSubmit="handleRequestSubmit" />
+        </div>
+      </div>
+    </div>
+
     <!-- Popup confirmación de eliminación -->
     <div v-if="showDeletePopup" class="custom-modal-overlay" @click.self="cancelDelete">
       <div class="custom-modal text-center">
@@ -96,6 +118,7 @@
 </template>
 
 <script setup>
+import ServiceRequestForm from '../common/ServiceRequestForm.vue'
 import { siteConfig, saveSiteConfig, loadSiteConfig } from '@/config/siteConfig'
 import { computed, ref, onMounted } from 'vue'
 
@@ -106,26 +129,58 @@ onMounted(() => {
 const requests = computed(() => siteConfig.requests || [])
 const personal = computed(() => siteConfig.contact.staff.map(s => s.name))
 
-// Estado para modal "Ver Todo"
+// Estados modales
 const showModal = ref(false)
+const showCreateModal = ref(false)
 const selectedRequest = ref({})
-
-// Estado para popup de eliminación
-const showDeletePopup = ref(false)
 const deleteIndex = ref(null)
+const showDeletePopup = ref(false)
 
-// Funciones del modal
+// Servicio seleccionado por defecto
+const selectedService = ref({
+  title: "Asesoría Legal",
+  fullDescription: "Orientación profesional en materia judicial y administrativa.",
+  includes: ["Consulta inicial", "Revisión de documentos", "Seguimiento de caso"],
+  duration: "30-60 minutos",
+  price: "Gratis",
+  idealFor: "Ciudadanos en proceso judicial",
+  detailImage: "/assets/img/service-legal.jpg"
+})
+
+// Ver Detalle
 const viewRequest = (req) => {
   selectedRequest.value = { ...req }
   showModal.value = true
 }
-const closeModal = () => {
-  showModal.value = false
+const closeModal = () => { showModal.value = false }
+
+// Crear nueva solicitud
+const openCreateModal = () => { showCreateModal.value = true }
+const closeCreateModal = () => { showCreateModal.value = false }
+
+// Envío desde el formulario reutilizable
+const handleRequestSubmit = async (data) => {
+  const newReq = {
+    id: Date.now(),
+    tipo: selectedService.value.title,
+    nombre: data.name,
+    gmail: data.email,
+    hora: new Date().toISOString(),
+    responsable: "",
+    telefono: data.phone || "",
+    fecha: data.date || "",
+    mensaje: data.message || selectedService.value.fullDescription
+  }
+
+  siteConfig.requests.push(newReq)
+  saveSiteConfig()
+
+  showCreateModal.value = false
 }
 
-// Funciones de eliminación con confirmación
-const confirmDelete = (index) => {
-  deleteIndex.value = index
+// Eliminar solicitud
+const confirmDelete = (i) => {
+  deleteIndex.value = i
   showDeletePopup.value = true
 }
 const cancelDelete = () => {
@@ -141,10 +196,15 @@ const deleteRequest = () => {
   deleteIndex.value = null
 }
 
-// Formatear hora
-const formatDate = (datetime) => {
-  if (!datetime) return '—'
-  const date = new Date(datetime)
+// Botón de refrescar (placeholder)
+const refreshRequests = () => {
+  console.log("🔄 Refrescando solicitudes (placeholder, sin conexión al backend)")
+}
+
+// Formato fecha
+const formatDate = (d) => {
+  if (!d) return '—'
+  const date = new Date(d)
   return date.toLocaleString('es-ES', {
     dateStyle: 'short',
     timeStyle: 'short'
@@ -153,8 +213,7 @@ const formatDate = (datetime) => {
 </script>
 
 <style scoped>
-.table th,
-.table td {
+.table th, .table td {
   vertical-align: middle;
 }
 
@@ -164,7 +223,7 @@ const formatDate = (datetime) => {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0,0,0,0.5);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -177,14 +236,23 @@ const formatDate = (datetime) => {
   padding: 24px;
   width: 420px;
   max-width: 90%;
-  box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 0 15px rgba(0,0,0,0.3);
   animation: fadeIn 0.25s ease;
 }
+.custom-modal.large { width: 800px; }
 
-.modal-content-body p {
-  margin-bottom: 6px;
+.modal-content {
+  position: relative;
 }
-
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  border: none;
+  background: none;
+  font-size: 1.25rem;
+  cursor: pointer;
+}
 .message-box {
   background-color: #f8f9fa;
   border: 1px solid #dee2e6;
@@ -194,15 +262,8 @@ const formatDate = (datetime) => {
   font-size: 0.9rem;
   color: #333;
 }
-
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
 }
 </style>
