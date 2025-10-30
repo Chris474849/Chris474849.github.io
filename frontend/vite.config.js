@@ -18,5 +18,8 @@ export default defineConfig(({ mode }) => {
     },
     // Configuración para GitHub Pages
     base: mode === 'production' ? '/Chris474849.github.io/' : '/',
+    build: {
+      outDir: 'dist'
+    }
   }
 })
