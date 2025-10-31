@@ -4,12 +4,14 @@
       <h2 class="text-center section-title">{{ siteConfig.portfolio.title }}</h2>
       <div class="row g-4">
         <div class="col-md-4" v-for="image in siteConfig.portfolio.images" :key="image.id">
-          <img 
-            :src="image.url" 
-            :alt="image.alt" 
-            class="img-fluid gallery-img rounded"
-            @click="openImage(image)"
-          >
+          <div class="gallery-wrapper">
+            <img 
+              :src="image.url" 
+              :alt="image.alt" 
+              class="img-fluid gallery-img rounded"
+              @click="openImage(image)"
+            >
+          </div>
         </div>
       </div>
     </div>
@@ -52,9 +54,15 @@ section {
   background-color: var(--secondary-color, #e67e22);
 }
 
+.gallery-wrapper {
+  height: 250px; /* altura fija para todas las imágenes */
+  overflow: hidden;
+}
+
 .gallery-img {
-  height: 250px;
-  object-fit: cover;
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* asegura que la imagen cubra todo el contenedor sin deformarse */
   cursor: pointer;
   transition: all 0.3s ease;
 }

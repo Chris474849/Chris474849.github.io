@@ -9,8 +9,21 @@
         <button class="btn btn-success" @click="openCreateModal">
           <i class="fas fa-plus me-2"></i> Crear Solicitud
         </button>
+        <button class="btn btn-primary" :disabled="!hasChanges" @click="saveRequestsChanges">
+          <i class="fas fa-save me-2"></i> Guardar
+        </button>
       </div>
+      <div v-if="showSaveModal" class="custom-modal-overlay" @click.self="showSaveModal = false">
+          <div class="custom-modal">
+            <h5 class="mb-3 text-primary">{{ saveModalTitle }}</h5>
+            <p>{{ saveModalMessage }}</p>
+            <div class="text-end mt-4">
+              <button class="btn btn-secondary" @click="showSaveModal = false">Cerrar</button>
+            </div>
+          </div>
+        </div>
     </div>
+
 
     <table class="table table-striped align-middle">
       <thead class="table-dark">
@@ -120,21 +133,48 @@
 <script setup>
 import ServiceRequestForm from '../common/ServiceRequestForm.vue'
 import { siteConfig, saveSiteConfig, loadSiteConfig } from '@/config/siteConfig'
-import { computed, ref, onMounted } from 'vue'
+import { computed, ref, onMounted, watch } from 'vue'
 
-onMounted(() => {
-  loadSiteConfig()
+// Cargar configuración
+onMounted(() => loadSiteConfig())
+
+// Obtener datos del usuario desde sessionStorage
+const data = sessionStorage.getItem('authUser')
+let parsedData = null
+try {
+  parsedData = JSON.parse(data)
+} catch (e) {
+  parsedData = null
+}
+const currentRole = ref(parsedData?.role || 'worker')
+
+const currentUserId = ref(parsedData?.id || '')
+console.log(data)
+console.log(currentUserId)
+// Filtrar solicitudes según rol
+const requests = computed(() => {
+  if (!siteConfig.requests) return []
+  
+  if (currentRole.value === 'admin') {
+    return siteConfig.requests
+  } else {
+    // Worker solo ve solicitudes donde responsable === id del usuario
+    return siteConfig.requests.filter(req => req.responsable === currentUserId.value)
+  }
 })
 
-const requests = computed(() => siteConfig.requests || [])
+// Lista de personal para select
 const personal = computed(() => siteConfig.contact.staff.map(s => s.name))
 
-// Estados modales
+// === Estados modales ===
 const showModal = ref(false)
 const showCreateModal = ref(false)
 const selectedRequest = ref({})
 const deleteIndex = ref(null)
 const showDeletePopup = ref(false)
+const showSaveModal = ref(false)
+const saveModalTitle = ref('')
+const saveModalMessage = ref('')
 
 // Servicio seleccionado por defecto
 const selectedService = ref({
@@ -147,18 +187,16 @@ const selectedService = ref({
   detailImage: "/assets/img/service-legal.jpg"
 })
 
-// Ver Detalle
+// === Funciones modales ===
 const viewRequest = (req) => {
   selectedRequest.value = { ...req }
   showModal.value = true
 }
 const closeModal = () => { showModal.value = false }
-
-// Crear nueva solicitud
 const openCreateModal = () => { showCreateModal.value = true }
 const closeCreateModal = () => { showCreateModal.value = false }
 
-// Envío desde el formulario reutilizable
+// Crear nueva solicitud
 const handleRequestSubmit = async (data) => {
   const newReq = {
     id: Date.now(),
@@ -166,7 +204,7 @@ const handleRequestSubmit = async (data) => {
     nombre: data.name,
     gmail: data.email,
     hora: new Date().toISOString(),
-    responsable: "",
+    responsable: "", // se puede asignar después
     telefono: data.phone || "",
     fecha: data.date || "",
     mensaje: data.message || selectedService.value.fullDescription
@@ -174,19 +212,59 @@ const handleRequestSubmit = async (data) => {
 
   siteConfig.requests.push(newReq)
   saveSiteConfig()
-
   showCreateModal.value = false
 }
 
+// Guardamos una copia de los requests originales para detectar cambios
+const originalRequests = ref(JSON.parse(JSON.stringify(siteConfig.requests || [])))
+
+// Computed para detectar si hay cambios
+const hasChanges = computed(() => {
+  if (!siteConfig.requests) return false
+  return requests.value.some(r => {
+    const original = originalRequests.value.find(o => o.id === r.id)
+    return original && (original.hora !== r.hora || original.responsable !== r.responsable)
+  })
+})
+
+const saveRequestsChanges = () => {
+  if (!hasChanges.value) {
+    saveModalTitle.value = 'Sin cambios'
+    saveModalMessage.value = 'No se realizaron modificaciones en las solicitudes.'
+    showSaveModal.value = true
+    return
+  }
+
+  if (currentRole.value === 'admin') {
+    saveSiteConfig()
+  } else {
+    requests.value.forEach(r => {
+      const idx = siteConfig.requests.findIndex(req => req.id === r.id)
+      if (idx !== -1) {
+        siteConfig.requests[idx].hora = r.hora
+        siteConfig.requests[idx].responsable = r.responsable
+      }
+    })
+    saveSiteConfig()
+  }
+
+  // Actualizar la copia original
+  originalRequests.value = JSON.parse(JSON.stringify(siteConfig.requests || []))
+
+  saveModalTitle.value = 'Éxito'
+  saveModalMessage.value = 'Cambios guardados correctamente'
+  showSaveModal.value = true
+}
+
+// Opcional: watch para reactivar/desactivar botón si se crean/eliminan solicitudes
+watch(siteConfig.requests, () => {
+  originalRequests.value = JSON.parse(JSON.stringify(siteConfig.requests || []))
+})
+
+
 // Eliminar solicitud
-const confirmDelete = (i) => {
-  deleteIndex.value = i
-  showDeletePopup.value = true
-}
-const cancelDelete = () => {
-  showDeletePopup.value = false
-  deleteIndex.value = null
-}
+const confirmDelete = (i) => { deleteIndex.value = i; showDeletePopup.value = true }
+const cancelDelete = () => { showDeletePopup.value = false; deleteIndex.value = null }
 const deleteRequest = () => {
   if (deleteIndex.value !== null) {
     siteConfig.requests.splice(deleteIndex.value, 1)
@@ -196,21 +274,17 @@ const deleteRequest = () => {
   deleteIndex.value = null
 }
 
-// Botón de refrescar (placeholder)
-const refreshRequests = () => {
-  console.log("🔄 Refrescando solicitudes (placeholder, sin conexión al backend)")
-}
+// Refrescar listado
+const refreshRequests = () => console.log("🔄 Refrescando solicitudes (placeholder)")
 
 // Formato fecha
 const formatDate = (d) => {
   if (!d) return '—'
   const date = new Date(d)
-  return date.toLocaleString('es-ES', {
-    dateStyle: 'short',
-    timeStyle: 'short'
-  })
+  return date.toLocaleString('es-ES', { dateStyle: 'short', timeStyle: 'short' })
 }
 </script>
+
 
 <style scoped>
 .table th, .table td {

@@ -54,16 +54,8 @@ const email = ref('')
 const password = ref('')
 const error = ref('')
 
-const users = [
-  {
-    email: appConfig.defaultUser.email,
-    password: appConfig.defaultUser.password,
-    role: appConfig.defaultUser.role,
-  },
-  { email: 'user@gmail.com', password: 'password123', role: 'user' },
-]
+const users = Object.values(appConfig)
 
-// Sanitiza caracteres peligrosos en email
 const sanitizeEmail = () => {
   email.value = email.value.replace(/[<>"'`;(){}]/g, '')
 }

@@ -22,6 +22,6 @@ onMounted(() => {
 
 const logout = () => {
   sessionStorage.removeItem('authUser')
-  router.push('/')
+  router.push('/login')
 }
 </script>

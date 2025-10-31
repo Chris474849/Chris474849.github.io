@@ -45,11 +45,13 @@
           <div class="modal-body" v-if="selectedService">
             <div class="row">
               <div class="col-md-6">
-                <img 
-                  :src="selectedService.detailImage" 
-                  :alt="selectedService.title" 
-                  class="img-fluid rounded mb-3"
-                >
+                <div class="service-image-wrapper">
+                  <img 
+                    :src="selectedService.detailImage" 
+                    :alt="selectedService.title" 
+                    class="service-img rounded mb-3"
+                  >
+                </div>
               </div>
               <div class="col-md-6">
                 <h6 class="text-primary mb-3">Descripción detallada</h6>
@@ -263,6 +265,18 @@ section {
 .service-detail-card p {
   margin-bottom: 0;
   font-weight: 500;
+}
+
+.service-image-wrapper {
+  width: 100%;
+  height: 300px; /* ajusta la altura que necesites */
+  overflow: hidden;
+}
+
+.service-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* cubre todo el contenedor sin deformarse */
 }
 
 .modal-header {

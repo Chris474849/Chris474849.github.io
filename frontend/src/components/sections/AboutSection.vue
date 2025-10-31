@@ -3,11 +3,13 @@
     <div class="container">
       <div class="row align-items-center">
         <div class="col-lg-6 mb-4 mb-lg-0">
-          <img 
-            :src="siteConfig.about.image" 
-            alt="Nuestro equipo" 
-            class="img-fluid rounded"
-          >
+          <div class="about-image-wrapper">
+            <img 
+              :src="siteConfig.about.image" 
+              alt="Nuestro equipo" 
+              class="about-img rounded"
+            >
+          </div>
         </div>
         <div class="col-lg-6">
           <h2 class="section-title text-start">{{ siteConfig.about.title }}</h2>
@@ -51,5 +53,17 @@ section {
   width: 50px;
   height: 3px;
   background-color: var(--secondary-color, #e67e22);
+}
+
+.about-image-wrapper {
+  width: 100%;
+  height: 400px; /* ajusta la altura que necesites */
+  overflow: hidden;
+}
+
+.about-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* la imagen cubre todo el contenedor sin deformarse */
 }
 </style>

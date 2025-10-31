@@ -414,38 +414,60 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { siteConfig, saveSiteConfig, resetSiteConfig, syncContactServices } from '@/config/siteConfig'
 import AdminRequests from './AdminRequests.vue'
 
-const activeSection = ref('general')
+// 👇 se inicializa vacío
+const activeSection = ref('') 
 const showConfirmModal = ref(false)
 const showToast = ref(false)
 const toastTitle = ref('')
 const toastMessage = ref('')
 const toastIcon = ref('')
 
-const sections = [
-  { id: 'general', name: 'General', icon: 'fas fa-cog' },
-  { id: 'hero', name: 'Sección Principal', icon: 'fas fa-home' },
-  { id: 'services', name: 'Servicios', icon: 'fas fa-briefcase' },
-  { id: 'portfolio', name: 'Portafolio', icon: 'fas fa-images' },
-  { id: 'about', name: 'Acerca De', icon: 'fas fa-users' },
-  { id: 'contact', name: 'Contacto', icon: 'fas fa-envelope' },
-  { id: 'footer', name: 'Pie de Página', icon: 'fas fa-align-center' },
-  { id: 'theme', name: 'Tema', icon: 'fas fa-palette' },
-  { id: 'requests', name: 'Solicitudes', icon: 'fas fa-list' }
+// Obtener rol del usuario desde sessionStorage
+const data = sessionStorage.getItem('authUser')
+let parsedData = null
+try {
+  parsedData = JSON.parse(data)
+} catch (e) {
+  parsedData = null
+}
+const currentRole = ref(parsedData?.role || 'worker') // default 'worker'
+
+// Todas las secciones con roles (ahora roles es un array)
+const allSections = [
+  { id: 'general', name: 'General', icon: 'fas fa-cog', roles: ['admin'] },
+  { id: 'hero', name: 'Sección Principal', icon: 'fas fa-home', roles: ['admin'] },
+  { id: 'services', name: 'Servicios', icon: 'fas fa-briefcase', roles: ['admin'] },
+  { id: 'portfolio', name: 'Portafolio', icon: 'fas fa-images', roles: ['admin'] },
+  { id: 'about', name: 'Acerca De', icon: 'fas fa-users', roles: ['admin'] },
+  { id: 'contact', name: 'Contacto', icon: 'fas fa-envelope', roles: ['admin'] },
+  { id: 'footer', name: 'Pie de Página', icon: 'fas fa-align-center', roles: ['admin'] },
+  { id: 'theme', name: 'Tema', icon: 'fas fa-palette', roles: ['admin'] },
+  { id: 'requests', name: 'Solicitudes', icon: 'fas fa-list', roles: ['worker', 'admin'] } // visible para varios roles
 ]
 
+// Filtrado dinámico según el rol
+const sections = computed(() => {
+  return allSections.filter(section => section.roles.includes(currentRole.value))
+})
+
+// 👇 Inicializar activeSection con la primera sección que el rol puede ver
 onMounted(() => {
-  // Cargar configuración guardada si existe
   const saved = localStorage.getItem('siteConfig')
   if (saved) {
     const parsedConfig = JSON.parse(saved)
     Object.assign(siteConfig, parsedConfig)
   }
+
+  if (sections.value.length > 0) {
+    activeSection.value = sections.value[0].id
+  }
 })
 
+// --- Funciones de configuración ---
 const saveAllChanges = () => {
   saveSiteConfig()
   showToastMessage('Éxito', 'Cambios guardados correctamente', 'fas fa-check-circle text-success')
@@ -470,66 +492,20 @@ const showToastMessage = (title, message, icon) => {
   toastMessage.value = message
   toastIcon.value = icon
   showToast.value = true
-  
-  setTimeout(() => {
-    showToast.value = false
-  }, 3000)
+  setTimeout(() => (showToast.value = false), 3000)
 }
 
+// --- Funciones para servicios ---
+const addNewService = () => { /* ... */ }
+const removeService = (index) => { /* ... */ }
+const updateServiceIncludes = (serviceIndex, value) => { /* ... */ }
 
-// Funciones para servicios
-const addNewService = () => {
-  const newId = Math.max(...siteConfig.services.items.map(s => s.id)) + 1
-  siteConfig.services.items.push({
-    id: newId,
-    icon: 'fas fa-star',
-    title: 'Nuevo Servicio',
-    description: 'Descripción del servicio',
-    fullDescription: 'Descripción completa del servicio con todos los detalles.',
-    detailImage: 'https://via.placeholder.com/600x400/e67e22/ffffff?text=Nuevo+Servicio',
-    duration: '1-2 horas',
-    price: '$100 USD',
-    idealFor: 'Todo tipo de clientes',
-    includes: [
-      'Servicio profesional',
-      'Atención personalizada',
-      'Resultados de calidad'
-    ]
-  })
-  syncContactServices() // Sincronizar inmediatamente
-}
-
-const removeService = (index) => {
-  if (confirm('¿Estás seguro de que deseas eliminar este servicio?')) {
-    siteConfig.services.items.splice(index, 1)
-    syncContactServices() // Sincronizar inmediatamente
-  }
-}
-
-const updateServiceIncludes = (serviceIndex, value) => {
-  const includes = value.split('\n').filter(item => item.trim() !== '')
-  siteConfig.services.items[serviceIndex].includes = includes
-}
-
-
-// Funciones para personal
-const addNewStaffMember = () => {
-  const newId = Math.max(...siteConfig.contact.staff.map(s => s.id)) + 1
-  siteConfig.contact.staff.push({
-    id: newId,
-    value: 'nuevo-personal',
-    name: 'Nuevo Miembro',
-    specialty: 'Especialidad del miembro del equipo',
-    image: 'https://via.placeholder.com/150x150/2c3e50/ffffff?text=N'
-  })
-}
-
-const removeStaffMember = (index) => {
-  if (confirm('¿Estás seguro de que deseas eliminar este miembro del personal?')) {
-    siteConfig.contact.staff.splice(index, 1)
-  }
-}
+// --- Funciones para personal ---
+const addNewStaffMember = () => { /* ... */ }
+const removeStaffMember = (index) => { /* ... */ }
 </script>
+
+
 
 <style scoped>
 .card {
