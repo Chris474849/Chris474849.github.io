@@ -143,7 +143,7 @@ const contactService = () => {
     // Enviar evento personalizado para pre-rellenar el formulario
     window.dispatchEvent(new CustomEvent('preselect-service', {
       detail: {
-        service: serviceMap[selectedService.value.title] || '',
+        service: selectedService.value.title || '',
         message: message
       }
     }))
