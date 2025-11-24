@@ -1,7 +1,12 @@
 fastapi
-uvicorn[standard]
-sqlmodel
-email-validator
+uvicorn
+sqlalchemy
+psycopg2-binary
+pydantic
+pydantic_settings
+python-jose
+passlib[bcrypt]
+validate_email
+dnspython
 python-multipart
-aiofiles
-python-dotenv
+email-validator
