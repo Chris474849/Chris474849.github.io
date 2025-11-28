@@ -9,6 +9,14 @@ from app.services.request_service import (
     update_request,
     delete_request
 )
+from app.schemas.request import (
+    RequestCreate, RequestUpdate, RequestOut, RequestValidateIn, RequestValidateOut
+)
+
+from app.services.request_service import (
+    create_request, get_request, list_requests, update_request,
+    delete_request, validate_request_logic
+)
 
 router = APIRouter(prefix="/requests")
 
@@ -40,3 +48,10 @@ def delete_req(request_id: int, db: Session = Depends(get_db)):
     if not ok:
         raise HTTPException(404, "Request not found")
     return {"ok": True}
+
+@router.post("/validate", response_model=RequestValidateOut)
+def validate_req(data: RequestValidateIn, db: Session = Depends(get_db)):
+    result = validate_request_logic(db, data)
+    if not result.allowed:
+        raise HTTPException(400, result.reason)
+    return result

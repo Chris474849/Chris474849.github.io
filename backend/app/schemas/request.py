@@ -2,7 +2,6 @@ from pydantic import BaseModel
 from datetime import date
 
 class RequestBase(BaseModel):
-    user_id: int
     email: str
     nombre: str
     telefono: str
@@ -25,6 +24,14 @@ class RequestUpdate(BaseModel):
 
 class RequestOut(RequestBase):
     id: int
-
     class Config:
         orm_mode = True
+
+class RequestValidateIn(BaseModel):
+    email: str
+    servicio: str
+    fecha: date
+
+class RequestValidateOut(BaseModel):
+    allowed: bool
+    reason: str | None = None

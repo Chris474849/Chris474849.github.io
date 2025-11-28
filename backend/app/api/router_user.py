@@ -30,14 +30,20 @@ def create_user_route(data: UserCreate, db: Session = Depends(get_db)):
     if result is None:
         raise HTTPException(status_code=400, detail="Unknown error creating user")
         
-    return UserOut(id=result.id, email=result.email, role=result.role.name)
+    return UserOut(
+    id=result.id,
+    email=result.email,
+    role=result.role.name,
+    is_verified=result.is_verified
+)
+
 
 # --- READ LIST ---
 @router.get("/users", response_model=List[UserOut])
 def list_users(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     users = user_service.get_all_users(db, skip, limit)
     # Mapeo manual o usar ORM mode de Pydantic
-    return [UserOut(id=u.id, email=u.email, role=u.role.name) for u in users]
+    return [UserOut(id=u.id, email=u.email, role=u.role.name, is_verified=u.is_verified) for u in users]
 
 # --- READ ONE ---
 @router.get("/users/{user_id}", response_model=UserOut)
@@ -45,7 +51,13 @@ def get_user(user_id: int, db: Session = Depends(get_db)):
     user = user_service.get_user_by_id(user_id, db)
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
-    return UserOut(id=user.id, email=user.email, role=user.role.name)
+    return UserOut(
+    id=user.id,
+    email=user.email,
+    role=user.role.name,
+    is_verified=user.is_verified
+)
+
 
 @router.put("/users/{user_id}", response_model=UserOut)
 def update_user_route(user_id: int, data: UserUpdate, db: Session = Depends(get_db)):
@@ -64,7 +76,13 @@ def update_user_route(user_id: int, data: UserUpdate, db: Session = Depends(get_
     if result == "role_error":
         raise HTTPException(status_code=400, detail="Role does not exist")
         
-    return UserOut(id=result.id, email=result.email, role=result.role.name)
+    return UserOut(
+        id=result.id,
+        email=result.email,
+        role=result.role.name,
+        is_verified=result.is_verified
+    )
+
 
 # --- DELETE ---
 @router.delete("/users/{user_id}")
