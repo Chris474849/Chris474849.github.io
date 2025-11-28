@@ -102,6 +102,7 @@ def resend_code(db: Session, email: str):
 # --- CRUD CREATE ---
 def create_user(data, db: Session):
     # 1. Validar email, verificar existencia, verificar rol (Lógica anterior OK)
+    print(data.email)
     try:
         valid = validate_email(data.email, check_deliverability=True)
         email_normalized = valid.normalized

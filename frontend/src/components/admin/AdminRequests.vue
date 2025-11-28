@@ -39,14 +39,14 @@
 
       <tbody>
         <tr v-for="(req, i) in requests" :key="req.id">
-          <td>{{ req.tipo }}</td>
+          <td>{{ req.servicio }}</td>
           <td>{{ req.nombre }}</td>
-          <td>{{ req.gmail }}</td>
+          <td>{{ req.email }}</td>
 
           <td>
             <input
-              type="datetime-local"
-              v-model="req.hora"
+              type="date"
+              v-model="req.fecha"
               class="form-control form-control-sm"
               style="max-width: 220px;"
             />
@@ -54,7 +54,7 @@
 
           <td>
             <select
-              v-model="req.responsable"
+              v-model="req.personal"
               class="form-select form-select-sm"
               style="max-width: 200px;"
             >
@@ -88,13 +88,13 @@
       <div class="custom-modal">
         <h5 class="mb-3 text-primary">Detalles de la Solicitud</h5>
         <div class="modal-content-body">
-          <p><strong>Tipo:</strong> {{ selectedRequest.tipo }}</p>
+          <p><strong>Tipo:</strong> {{ selectedRequest.servicio }}</p>
           <p><strong>Nombre:</strong> {{ selectedRequest.nombre }}</p>
-          <p><strong>Correo:</strong> {{ selectedRequest.gmail }}</p>
+          <p><strong>Correo:</strong> {{ selectedRequest.email }}</p>
           <p><strong>Teléfono:</strong> {{ selectedRequest.telefono || '—' }}</p>
           <p><strong>Fecha solicitada:</strong> {{ selectedRequest.fecha || '—' }}</p>
           <p><strong>Hora de registro:</strong> {{ formatDate(selectedRequest.hora) }}</p>
-          <p><strong>Responsable:</strong> {{ selectedRequest.responsable || 'No asignado' }}</p>
+          <p><strong>Responsable:</strong> {{ selectedRequest.personal || 'No asignado' }}</p>
           <p><strong>Mensaje:</strong></p>
           <div class="message-box">{{ selectedRequest.mensaje }}</div>
         </div>
@@ -134,39 +134,31 @@
 import ServiceRequestForm from '../common/ServiceRequestForm.vue'
 import { siteConfig, saveSiteConfig, loadSiteConfig } from '@/config/siteConfig'
 import { computed, ref, onMounted, watch } from 'vue'
+import { fetchRequests, createRequestAPI, updateRequestAPI, deleteRequestAPI } from '@/api/requests'
 
-// Cargar configuración
-onMounted(() => loadSiteConfig())
-
-// Obtener datos del usuario desde sessionStorage
-const data = sessionStorage.getItem('authUser')
-let parsedData = null
-try {
-  parsedData = JSON.parse(data)
-} catch (e) {
-  parsedData = null
-}
-const currentRole = ref(parsedData?.role || 'worker')
-
-const currentUserId = ref(parsedData?.id || '')
-console.log(data)
-console.log(currentUserId)
-// Filtrar solicitudes según rol
-const requests = computed(() => {
-  if (!siteConfig.requests) return []
-  
-  if (currentRole.value === 'admin') {
-    return siteConfig.requests
-  } else {
-    // Worker solo ve solicitudes donde responsable === id del usuario
-    return siteConfig.requests.filter(req => req.responsable === currentUserId.value)
-  }
+onMounted(() => {
+  loadSiteConfig()
+  refreshRequests()
 })
 
-// Lista de personal para select
+const data = sessionStorage.getItem('authUser')
+let parsedData = null
+try { parsedData = JSON.parse(data) } catch (e) { parsedData = null }
+
+const currentRole = ref(parsedData?.role || 'worker')
+const currentUserId = ref(parsedData?.id || '')
+
+// CORRECCIÓN 1: Asegura que siteConfig.requests es tratado como un Array vacío si es null/undefined
+const requestsArray = computed(() => siteConfig.requests || [])
+
+const requests = computed(() => {
+  // Utilizamos requestsArray para acceder a los datos de forma segura
+  if (currentRole.value === 'admin') return requestsArray.value
+  return requestsArray.value.filter(req => req.responsable === currentUserId.value)
+})
+
 const personal = computed(() => siteConfig.contact.staff.map(s => s.name))
 
-// === Estados modales ===
 const showModal = ref(false)
 const showCreateModal = ref(false)
 const selectedRequest = ref({})
@@ -176,7 +168,6 @@ const showSaveModal = ref(false)
 const saveModalTitle = ref('')
 const saveModalMessage = ref('')
 
-// Servicio seleccionado por defecto
 const selectedService = ref({
   title: "Asesoría Legal",
   fullDescription: "Orientación profesional en materia judicial y administrativa.",
@@ -187,7 +178,6 @@ const selectedService = ref({
   detailImage: "/assets/img/service-legal.jpg"
 })
 
-// === Funciones modales ===
 const viewRequest = (req) => {
   selectedRequest.value = { ...req }
   showModal.value = true
@@ -198,86 +188,113 @@ const closeCreateModal = () => { showCreateModal.value = false }
 
 // Crear nueva solicitud
 const handleRequestSubmit = async (data) => {
-  const newReq = {
-    id: Date.now(),
-    tipo: selectedService.value.title,
-    nombre: data.name,
-    gmail: data.email,
-    hora: new Date().toISOString(),
-    responsable: "", // se puede asignar después
-    telefono: data.phone || "",
-    fecha: data.date || "",
-    mensaje: data.message || selectedService.value.fullDescription
-  }
+  // const newReq = {
+  //   id: Date.now(),
+  //   tipo: selectedService.value.title,
+  //   nombre: data.name,
+  //   gmail: data.email,
+  //   hora: new Date().toISOString(),
+  //   responsable: "", // se puede asignar después
+  //   telefono: data.phone || "",
+  //   fecha: data.date || "",
+  //   mensaje: data.message || selectedService.value.fullDescription
+  // }
 
-  siteConfig.requests.push(newReq)
-  saveSiteConfig()
+  // siteConfig.requests.push(newReq)
+  // saveSiteConfig()
   showCreateModal.value = false
 }
 
-// Guardamos una copia de los requests originales para detectar cambios
-const originalRequests = ref(JSON.parse(JSON.stringify(siteConfig.requests || [])))
+const originalRequests = ref([])
 
-// Computed para detectar si hay cambios
 const hasChanges = computed(() => {
-  if (!siteConfig.requests) return false
+  // CORRECCIÓN 2: Asegura que requests.value es un Array antes de llamar a .some()
+  if (!Array.isArray(requests.value)) return false
+  
   return requests.value.some(r => {
     const original = originalRequests.value.find(o => o.id === r.id)
     return original && (original.hora !== r.hora || original.responsable !== r.responsable)
   })
 })
 
-const saveRequestsChanges = () => {
+const saveRequestsChanges = async () => {
   if (!hasChanges.value) {
     saveModalTitle.value = 'Sin cambios'
-    saveModalMessage.value = 'No se realizaron modificaciones en las solicitudes.'
+    saveModalMessage.value = 'No se realizaron modificaciones.'
     showSaveModal.value = true
     return
   }
 
-  if (currentRole.value === 'admin') {
-    saveSiteConfig()
-  } else {
-    requests.value.forEach(r => {
-      const idx = siteConfig.requests.findIndex(req => req.id === r.id)
-      if (idx !== -1) {
-        siteConfig.requests[idx].hora = r.hora
-        siteConfig.requests[idx].responsable = r.responsable
+  try {
+    // Si requests.value no es un array (aunque ya lo verificamos arriba), no iteramos.
+    if (!Array.isArray(requests.value)) return
+    
+    for (const r of requests.value) {
+      const original = originalRequests.value.find(o => o.id === r.id)
+      if (!original) continue
+
+      if (original.hora !== r.hora || original.responsable !== r.responsable) {
+        await updateRequestAPI(r.id, {
+          hora: r.hora,
+          responsable: r.responsable
+        })
       }
-    })
-    saveSiteConfig()
-  }
+    }
 
-  // Actualizar la copia original
-  originalRequests.value = JSON.parse(JSON.stringify(siteConfig.requests || []))
+    saveModalTitle.value = 'Éxito'
+    saveModalMessage.value = 'Cambios guardados.'
+    showSaveModal.value = true
 
-  saveModalTitle.value = 'Éxito'
-  saveModalMessage.value = 'Cambios guardados correctamente'
-  showSaveModal.value = true
+    await refreshRequests()
+
+  } catch (e) {}
 }
 
-// Opcional: watch para reactivar/desactivar botón si se crean/eliminan solicitudes
-watch(siteConfig.requests, () => {
-  originalRequests.value = JSON.parse(JSON.stringify(siteConfig.requests || []))
-})
+watch(() => siteConfig.requests, (newRequests) => {
+  // CORRECCIÓN 3: Asegura que originalRequests se inicializa con un Array
+  originalRequests.value = JSON.parse(JSON.stringify(Array.isArray(newRequests) ? newRequests : []))
+}, { deep: true, immediate: true }) // Agregado immediate: true para inicialización temprana
 
-
-// Eliminar solicitud
 const confirmDelete = (i) => { deleteIndex.value = i; showDeletePopup.value = true }
 const cancelDelete = () => { showDeletePopup.value = false; deleteIndex.value = null }
-const deleteRequest = () => {
-  if (deleteIndex.value !== null) {
-    siteConfig.requests.splice(deleteIndex.value, 1)
-    saveSiteConfig()
-  }
+
+const deleteRequest = async () => {
+  try {
+    const id = requests.value[deleteIndex.value].id
+    await deleteRequestAPI(id)
+    // Asegura que siteConfig.requests es un array antes de splice
+    if (Array.isArray(siteConfig.requests)) {
+      siteConfig.requests.splice(siteConfig.requests.findIndex(r => r.id === id), 1)
+      saveSiteConfig()
+    }
+  } catch (e) {}
+
   showDeletePopup.value = false
   deleteIndex.value = null
 }
 
-// Refrescar listado
-const refreshRequests = () => console.log("🔄 Refrescando solicitudes (placeholder)")
+const refreshRequests = async () => {
+  try {
+    const { data } = await fetchRequests()
 
-// Formato fecha
+    // CORRECCIÓN 4: Solo actualiza siteConfig.requests si la respuesta es un Array.
+    if (Array.isArray(data)) {
+      siteConfig.requests = data
+      saveSiteConfig()
+      originalRequests.value = JSON.parse(JSON.stringify(data))
+    } else {
+      // Si el backend devuelve null o un objeto, lo tratamos como array vacío
+      siteConfig.requests = [] 
+      saveSiteConfig()
+      originalRequests.value = []
+    }
+  } catch (e) {
+    // En caso de error de API, establece la lista como array vacío para evitar fallos
+    siteConfig.requests = []
+  }
+}
+
+
 const formatDate = (d) => {
   if (!d) return '—'
   const date = new Date(d)

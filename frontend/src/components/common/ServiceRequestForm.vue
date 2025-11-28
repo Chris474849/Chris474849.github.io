@@ -99,7 +99,7 @@
                 required
             >
                 <option value="" disabled>Selecciona un miembro del personal</option>
-                <option v-for="member in siteConfig.contact.staff" :key="member.value" :value="member.value">
+                <option v-for="member in siteConfig.contact.staff" :key="member.name" :value="member.name">
                 {{ member.name }}
                 </option>
             </select>
@@ -137,14 +137,18 @@
             </div>
         </div>
         </form>
-        
-        <!-- Pop-up de éxito -->
-        <SuccessPopup 
-        :is-visible="showSuccessPopup"
-        :message="successMessage"
-        :auto-close="6000"
-        @close="closeSuccessPopup"
-        />
+          <SuccessPopup 
+          :is-visible="showSuccessPopup"
+          :message="successMessage"
+          :auto-close="6000"
+          @close="closeSuccessPopup"
+          />
+          <ErrorPopup
+          :is-visible="showErrorPopup"
+          :message="errorMessage"
+          :auto-close="6000"
+          @close="showErrorPopup = false"
+      />
     </div>
     </div>
 </template>
@@ -152,12 +156,16 @@
 <script setup>
 import { ref, reactive, onMounted } from 'vue'
 import SuccessPopup from '../common/SuccessPopup.vue'
+import ErrorPopup from '../common/ErrorPopup.vue'
 import { siteConfig, loadSiteConfig, saveSiteConfig } from '@/config/siteConfig'
+import { createRequestAPI } from '@/api/requests'
 
 const isSubmitting = ref(false)
 const hasAttemptedSubmit = ref(false)
 const showSuccessPopup = ref(false)
+const showErrorPopup = ref(false)
 const successMessage = ref('')
+const errorMessage = ref("")
 
 const formData = reactive({
   name: '',
@@ -168,6 +176,7 @@ const formData = reactive({
   staff: '',
   message: ''
 })
+
 
 // Reglas de validación
 const validationRules = {
@@ -303,7 +312,6 @@ onMounted(() => {
 const submitForm = async () => {
   hasAttemptedSubmit.value = true
 
-  // Validar todo el formulario
   if (!validateForm()) {
     const firstErrorField = Object.keys(errors)[0]
     if (firstErrorField) {
@@ -318,49 +326,37 @@ const submitForm = async () => {
 
   isSubmitting.value = true
 
-  // Simular envío (podrías reemplazar por un POST real si luego lo deseas)
-  setTimeout(() => {
-    // Buscar datos del personal
-    const selectedStaff = siteConfig.contact.staff.find(s => s.value === formData.staff)
-    const staffName = selectedStaff ? selectedStaff.name : 'nuestro equipo'
-
-    // Crear la nueva solicitud
-    const newRequest = {
-      id: Date.now(),
-      tipo: formData.service,
+  try {
+    const payload = {
+      servicio: formData.service,
       nombre: formData.name,
-      gmail: formData.email,
+      email: formData.email,
       telefono: formData.phone,
       fecha: formData.date,
-      responsable: staffName,
       mensaje: formData.message,
-      hora: new Date().toISOString().slice(0, 16)
+      personal: formData.staff
     }
 
-    // Guardar en siteConfig.requests
-    if (!Array.isArray(siteConfig.requests)) {
-      siteConfig.requests = []
-    }
-    siteConfig.requests.push(newRequest)
+    const { data } = await createRequestAPI(payload)
+
+    siteConfig.requests = Array.isArray(siteConfig.requests) ? siteConfig.requests : []
+    siteConfig.requests.push(data)
     saveSiteConfig()
 
-    // Mostrar popup de éxito
-    successMessage.value = `¡Gracias ${formData.name}! Tu solicitud ha sido recibida exitosamente. 
-Te contactaremos pronto a ${formData.email} para confirmar tu reserva de ${formData.service} con ${staffName}.`
-
+    successMessage.value = `¡Gracias ${formData.name}! Tu solicitud fue enviada correctamente.`
     showSuccessPopup.value = true
 
-    // Limpiar el formulario
-    Object.keys(formData).forEach(key => {
-      formData[key] = ''
-    })
-    Object.keys(errors).forEach(key => {
-      delete errors[key]
-    })
+    Object.keys(formData).forEach(k => formData[k] = "")
+    Object.keys(errors).forEach(k => delete errors[k])
 
+  } catch (err) {
+    errorMessage.value = "No se pudo enviar la solicitud. Intenta de nuevo más tarde."
+  showErrorPopup.value = true
+
+  } finally {
     hasAttemptedSubmit.value = false
     isSubmitting.value = false
-  }, 800)
+  }
 }
 
 

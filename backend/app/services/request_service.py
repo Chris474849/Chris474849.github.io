@@ -5,14 +5,46 @@ from app.schemas.request import (
     RequestCreate, RequestUpdate, RequestValidateIn, RequestValidateOut
 )
 from app.models.config import Config
+from app.schemas.user import UserCreate
+from app.services.user_service import create_user
 import json
+import secrets
+import string
 
 def create_request(db: Session, data: RequestCreate):
-    obj = Request(**data.dict())
-    db.add(obj)
-    db.commit()
-    db.refresh(obj)
-    return obj
+    validation_in = RequestValidateIn(
+        email=data.email,
+        servicio=data.servicio,
+        fecha=data.fecha
+    )
+    validation = validate_request_logic(db, validation_in)
+
+    if not validation.allowed:
+        return {"error": "validation_error", "msg": validation.reason}
+
+    generated_password = generate_random_password(length=16)
+
+    user_data = {
+        "email": data.email,
+        "role": "client",
+        "password": generated_password
+    }
+
+    user_creation_result = create_user(UserCreate(**user_data), db)
+
+    if isinstance(user_creation_result, dict) and "error" in user_creation_result:
+        return user_creation_result
+    
+    try:
+        obj = Request(**data.dict())
+        db.add(obj)
+        db.commit()
+        db.refresh(obj)
+        return obj
+    except Exception as e:
+        db.rollback()
+        return {"error": "database_error", "msg": f"Fallo al crear la solicitud: {e}"}
+
 
 def get_request(db: Session, request_id: int):
     return db.query(Request).filter(Request.id == request_id).first()
@@ -95,3 +127,19 @@ def validate_request_logic(db: Session, data: RequestValidateIn):
         allowed=True,
         reason="Disponible"
     )
+
+def generate_random_password(length: int = 16) -> str:
+    characters = string.ascii_letters + string.digits + string.punctuation
+    
+    password = [
+        secrets.choice(string.ascii_lowercase),
+        secrets.choice(string.ascii_uppercase),
+        secrets.choice(string.digits),
+        secrets.choice(string.punctuation),
+    ]
+
+    password += [secrets.choice(characters) for _ in range(length - len(password))]
+
+    secrets.SystemRandom().shuffle(password)
+    
+    return "".join(password)

@@ -137,14 +137,14 @@ export const siteConfig = reactive({
     staff: [
       { 
         id: 1,
-        value: 'daineris', 
+        value: 'Daineris', 
         name: 'Daineris',
         specialty: 'Fotografía de Retratos y Eventos',
         image: 'https://via.placeholder.com/150x150/e67e22/ffffff?text=D'
       },
       { 
         id: 2,
-        value: 'yoi', 
+        value: 'Yoi', 
         name: 'Yoi',
         specialty: 'Videografía y Fotografía Comercial',
         image: 'https://via.placeholder.com/150x150/2c3e50/ffffff?text=Y'

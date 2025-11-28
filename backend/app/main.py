@@ -1,4 +1,9 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.middleware.trustedhost import TrustedHostMiddleware
+from fastapi.middleware.gzip import GZipMiddleware
+from uvicorn.middleware.proxy_headers import ProxyHeadersMiddleware
+
 from app.api.router_user import router as user_router
 from app.api.router_auth import router as auth_router
 from app.api.router_role import router as role_router
@@ -14,10 +19,28 @@ from app.api.router_config import router as config_router
 
 Base.metadata.create_all(bind=engine)
 
-app = FastAPI()
+app = FastAPI(redirect_slashes=True)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+app.add_middleware(
+    ProxyHeadersMiddleware,
+    trusted_hosts="*",
+)
+
+app.add_middleware(
+    TrustedHostMiddleware,
+    allowed_hosts=["*"],
+)
+
+app.add_middleware(GZipMiddleware)
 
 init_auto_migrator(app)
-
 
 @app.on_event("startup")
 def init_roles():
