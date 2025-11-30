@@ -337,6 +337,15 @@
             </div>
         </div>
 
+        <div v-if="activeSection === 'users'" class="card">
+          <div class="card-header">
+            <h5 class="mb-0">Usuarios</h5>
+          </div>
+          <div class="card-body">
+            <AdminUsers />
+          </div>
+        </div>
+
         <!-- Sección Tema -->
         <div v-if="activeSection === 'theme'" class="card">
           <div class="card-header">
@@ -418,6 +427,7 @@ import { ref, computed, onMounted } from 'vue'
 import { siteConfig, syncContactServices } from '@/config/siteConfig'
 import { fetchDefaultConfig, fetchCurrentConfig, CreateDefaultConfig, CreateCurrentConfig } from '@/api/config'
 import AdminRequests from './AdminRequests.vue'
+import AdminUsers from './AdminUser.vue'
 
 const activeSection = ref('')
 const showConfirmModal = ref(false)
@@ -444,7 +454,9 @@ const allSections = [
   { id: 'contact', name: 'Contacto', icon: 'fas fa-envelope', roles: ['admin'] },
   { id: 'footer', name: 'Pie de Página', icon: 'fas fa-align-center', roles: ['admin'] },
   { id: 'theme', name: 'Tema', icon: 'fas fa-palette', roles: ['admin'] },
-  { id: 'requests', name: 'Solicitudes', icon: 'fas fa-list', roles: ['worker', 'admin'] }
+  { id: 'requests', name: 'Solicitudes', icon: 'fas fa-list', roles: ['worker', 'admin'] },
+  { id: 'users', name: 'Usuarios', icon: 'fas fa-users-cog', roles: ['admin'] }
+
 ]
 
 const sections = computed(() => {

@@ -1,5 +1,5 @@
 <template>
-  <footer>
+  <footer v-if="siteConfig.footer">
     <div class="container">
       <div class="row">
         <div class="col-lg-4 mb-4 mb-lg-0">

@@ -1,9 +1,18 @@
 <template>
-  <section id="portfolio" class="py-5 bg-light">
+  <section 
+    id="portfolio" 
+    class="py-5 bg-light"
+    v-if="siteConfig.portfolio"
+  >
     <div class="container">
       <h2 class="text-center section-title">{{ siteConfig.portfolio.title }}</h2>
+
       <div class="row g-4">
-        <div class="col-md-4" v-for="image in siteConfig.portfolio.images" :key="image.id">
+        <div 
+          class="col-md-4" 
+          v-for="image in siteConfig.portfolio.images" 
+          :key="image.id"
+        >
           <div class="gallery-wrapper">
             <img 
               :src="image.url" 
@@ -27,7 +36,6 @@ onMounted(() => {
 })
 
 const openImage = (image) => {
-  // En una implementación futura, aquí se puede abrir un modal o lightbox
   console.log('Abriendo imagen:', image.alt)
 }
 </script>

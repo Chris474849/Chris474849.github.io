@@ -1,5 +1,10 @@
 <template>
-  <section id="services" class="py-5">
+  <section 
+  id="services" 
+  class="py-5" 
+  v-if="siteConfig.services"
+>
+
     <div class="container">
       <h2 class="text-center section-title">{{ siteConfig.services.title }}</h2>
       <div class="row">

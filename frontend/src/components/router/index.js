@@ -3,13 +3,13 @@ import Home from '../pages/Home.vue'
 import Login from '../pages/Login.vue'
 import Admin from '../pages/Admin.vue'
 
-const isAuthenticated = () => !!sessionStorage.getItem('authUser')
+const isAuthenticated = () => !!sessionStorage.getItem('access')
 
 const routes = [
   {
     path: '/',
     name: 'Home',
-    component: Home,
+    component: Home
   },
   {
     path: '/login',
@@ -18,27 +18,27 @@ const routes = [
     beforeEnter: (to, from, next) => {
       if (isAuthenticated()) next('/admin')
       else next()
-    },
+    }
   },
   {
     path: '/admin',
     name: 'Admin',
     component: Admin,
-    meta: { requiresAuth: true },
+    beforeEnter: (to, from, next) => {
+      const token = sessionStorage.getItem('access')
+      if (!token) next('/login')
+      else next()
+    }
   },
-  { path: '/:pathMatch(.*)*', redirect: '/' },
+  {
+    path: '/:pathMatch(.*)*',
+    redirect: '/'
+  }
 ]
 
 const router = createRouter({
   history: createWebHistory(),
-  routes,
-})
-
-router.beforeEach((to, from, next) => {
-  const loggedIn = isAuthenticated()
-  if (to.meta.requiresAuth && !loggedIn) next('/login')
-  else if (to.path === '/login' && loggedIn) next('/admin')
-  else next()
+  routes
 })
 
 export default router

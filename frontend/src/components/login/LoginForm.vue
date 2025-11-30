@@ -47,54 +47,43 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import appConfig from '@/config/appConfig'
+import { LoginAuth } from '@/api/auth'
 
 const router = useRouter()
+
 const email = ref('')
 const password = ref('')
 const error = ref('')
-
-const users = Object.values(appConfig)
 
 const sanitizeEmail = () => {
   email.value = email.value.replace(/[<>"'`;(){}]/g, '')
 }
 
-// Sanitiza caracteres peligrosos en password
 const sanitizePassword = () => {
   password.value = password.value.replace(/[<>"'`;(){}]/g, '')
 }
 
-// Validación completa
-const handleLogin = () => {
-  const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[A-Za-z]{2,}$/
-  const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d!@#\$%\^&\*]{8,}$/
-  const forbidden = /(--|;|\/\*|\*\/|['"<>]|drop|insert|update|delete|script|select|union|--)/i
+const handleLogin = async () => {
+  error.value = ""
 
-  if (!emailRegex.test(email.value)) {
-    error.value = 'Correo inválido. Debe tener formato nombre@dominio.tld'
-    return
+  try {
+    const payload = {
+      email: email.value,
+      password: password.value
+    }
+
+    const { data } = await LoginAuth(payload)
+
+    sessionStorage.setItem("access", data.access)
+    sessionStorage.setItem("refresh", data.refresh)
+
+    router.push('/admin')
+  } catch (err) {
+    error.value = "Credenciales incorrectas."
   }
-
-  if (forbidden.test(password.value)) {
-    error.value = 'La contraseña contiene caracteres no permitidos.'
-    return
-  }
-
-  const user = users.find(
-    (u) => u.email === email.value && u.password === password.value
-  )
-
-  if (!user) {
-    error.value = 'Credenciales incorrectas.'
-    return
-  }
-
-  sessionStorage.setItem('authUser', JSON.stringify(user))
-  error.value = ''
-  router.push('/admin')
 }
 </script>
+
 
 <style scoped>
 .popup-overlay {

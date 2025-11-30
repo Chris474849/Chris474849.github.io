@@ -1,5 +1,9 @@
 <template>
-  <section id="about" class="py-5">
+  <section 
+    id="about" 
+    class="py-5"
+    v-if="siteConfig.about"
+  >
     <div class="container">
       <div class="row align-items-center">
         <div class="col-lg-6 mb-4 mb-lg-0">
@@ -11,6 +15,7 @@
             >
           </div>
         </div>
+
         <div class="col-lg-6">
           <h2 class="section-title text-start">{{ siteConfig.about.title }}</h2>
           <p class="lead">
@@ -23,6 +28,7 @@
       </div>
     </div>
   </section>
+
 </template>
 
 <script setup>

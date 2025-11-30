@@ -1,5 +1,10 @@
 <template>
-  <section id="home" class="hero-section" :style="heroBackgroundStyle">
+  <section 
+    id="home" 
+    class="hero-section" 
+    :style="heroBackgroundStyle"
+    v-if="siteConfig.hero"
+  >
     <div class="container text-center">
       <h1 class="display-3 fw-bold mb-4">{{ siteConfig.hero.title }}</h1>
       <h2 class="h3 mb-5">{{ siteConfig.hero.subtitle }}</h2>
@@ -8,6 +13,7 @@
       </a>
     </div>
   </section>
+
 </template>
 
 <script setup>

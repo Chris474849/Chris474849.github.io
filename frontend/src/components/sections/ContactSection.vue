@@ -1,5 +1,10 @@
 <template>
-  <section id="contact" class="py-5 bg-light">
+  <section 
+    id="contact" 
+    class="py-5 bg-light"
+    v-if="siteConfig.contact && siteConfig.services"  
+  >
+
     <div class="container">
       <h2 class="text-center section-title">{{ siteConfig.contact.title }}</h2>
       <div class="row justify-content-center">
