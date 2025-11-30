@@ -415,18 +415,17 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import { siteConfig, saveSiteConfig, resetSiteConfig, syncContactServices } from '@/config/siteConfig'
+import { siteConfig, syncContactServices } from '@/config/siteConfig'
+import { fetchDefaultConfig, fetchCurrentConfig, CreateDefaultConfig, CreateCurrentConfig } from '@/api/config'
 import AdminRequests from './AdminRequests.vue'
 
-// 👇 se inicializa vacío
-const activeSection = ref('') 
+const activeSection = ref('')
 const showConfirmModal = ref(false)
 const showToast = ref(false)
 const toastTitle = ref('')
 const toastMessage = ref('')
 const toastIcon = ref('')
 
-// Obtener rol del usuario desde sessionStorage
 const data = sessionStorage.getItem('authUser')
 let parsedData = null
 try {
@@ -434,9 +433,8 @@ try {
 } catch (e) {
   parsedData = null
 }
-const currentRole = ref(parsedData?.role || 'worker') // default 'worker'
+const currentRole = ref(parsedData?.role || 'worker')
 
-// Todas las secciones con roles (ahora roles es un array)
 const allSections = [
   { id: 'general', name: 'General', icon: 'fas fa-cog', roles: ['admin'] },
   { id: 'hero', name: 'Sección Principal', icon: 'fas fa-home', roles: ['admin'] },
@@ -446,30 +444,30 @@ const allSections = [
   { id: 'contact', name: 'Contacto', icon: 'fas fa-envelope', roles: ['admin'] },
   { id: 'footer', name: 'Pie de Página', icon: 'fas fa-align-center', roles: ['admin'] },
   { id: 'theme', name: 'Tema', icon: 'fas fa-palette', roles: ['admin'] },
-  { id: 'requests', name: 'Solicitudes', icon: 'fas fa-list', roles: ['worker', 'admin'] } // visible para varios roles
+  { id: 'requests', name: 'Solicitudes', icon: 'fas fa-list', roles: ['worker', 'admin'] }
 ]
 
-// Filtrado dinámico según el rol
 const sections = computed(() => {
   return allSections.filter(section => section.roles.includes(currentRole.value))
 })
 
-// 👇 Inicializar activeSection con la primera sección que el rol puede ver
-onMounted(() => {
-  const saved = localStorage.getItem('siteConfig')
-  if (saved) {
-    const parsedConfig = JSON.parse(saved)
-    Object.assign(siteConfig, parsedConfig)
-  }
+onMounted(async () => {
+  try {
+    const response = await fetchCurrentConfig()
+    const data = response.data
+    for (const key in siteConfig) delete siteConfig[key]
+    Object.assign(siteConfig, data)
+    syncContactServices()
+  } catch (e) {}
 
   if (sections.value.length > 0) {
     activeSection.value = sections.value[0].id
   }
 })
 
-// --- Funciones de configuración ---
-const saveAllChanges = () => {
-  saveSiteConfig()
+const saveAllChanges = async () => {
+  syncContactServices()
+  await CreateCurrentConfig(JSON.parse(JSON.stringify(siteConfig)))
   showToastMessage('Éxito', 'Cambios guardados correctamente', 'fas fa-check-circle text-success')
 }
 
@@ -477,10 +475,22 @@ const resetToDefaults = () => {
   showConfirmModal.value = true
 }
 
-const confirmReset = () => {
-  resetSiteConfig()
+const confirmReset = async () => {
+  try {
+    const response = await fetchDefaultConfig()
+    const defaultData = response.data
+
+    for (const key in siteConfig) delete siteConfig[key]
+    Object.assign(siteConfig, defaultData)
+
+    syncContactServices()
+
+    await CreateCurrentConfig(JSON.parse(JSON.stringify(defaultData)))
+
+    showToastMessage('Información', 'Configuración restaurada por defecto', 'fas fa-info-circle text-info')
+  } catch (e) {}
+
   showConfirmModal.value = false
-  showToastMessage('Información', 'Configuración restaurada por defecto', 'fas fa-info-circle text-info')
 }
 
 const updatePhones = (value) => {
@@ -495,14 +505,12 @@ const showToastMessage = (title, message, icon) => {
   setTimeout(() => (showToast.value = false), 3000)
 }
 
-// --- Funciones para servicios ---
-const addNewService = () => { /* ... */ }
-const removeService = (index) => { /* ... */ }
-const updateServiceIncludes = (serviceIndex, value) => { /* ... */ }
+const addNewService = () => {}
+const removeService = (index) => {}
+const updateServiceIncludes = (serviceIndex, value) => {}
 
-// --- Funciones para personal ---
-const addNewStaffMember = () => { /* ... */ }
-const removeStaffMember = (index) => { /* ... */ }
+const addNewStaffMember = () => {}
+const removeStaffMember = (index) => {}
 </script>
 
 

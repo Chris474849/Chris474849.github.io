@@ -18,9 +18,13 @@ onMounted(() => {
   loadSiteConfig()
 })
 
-const heroBackgroundStyle = computed(() => ({
-  background: `linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('${siteConfig.hero.backgroundImage}') no-repeat center center/cover`
-}))
+const heroBackgroundStyle = computed(() => {
+  if (!siteConfig.hero) return {}
+
+  return {
+    background: `linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('${siteConfig.hero.backgroundImage}') no-repeat center center/cover`
+  }
+})
 
 const scrollToContact = (event) => {
   event.preventDefault()
