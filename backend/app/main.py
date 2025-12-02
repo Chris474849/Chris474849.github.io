@@ -16,6 +16,7 @@ from app.core.auto_migrator import init_auto_migrator
 from app.core.init_config import init_config
 from app.api.router_request import router as request_router
 from app.api.router_config import router as config_router
+from app.api.router_reports import router as report_router
 
 Base.metadata.create_all(bind=engine)
 
@@ -57,3 +58,4 @@ app.include_router(role_router, tags=["Role"])
 app.include_router(booking_router, tags=["Bookings"])
 app.include_router(request_router, tags=["Request"])
 app.include_router(config_router, tags=["Config"])
+app.include_router(report_router, tags=["Reports"])

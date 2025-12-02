@@ -16,10 +16,12 @@ def login_user(email: str, password: str, db: Session):
         return None
     access = create_access_token({"sub": str(user.id)})
     refresh = create_refresh_token({"sub": str(user.id)})
+    role = user.role.name
+    print(role)
     rt = RefreshToken(token=refresh, user_id=user.id)
     db.add(rt)
     db.commit()
-    return {"access": access, "refresh": refresh}
+    return {"access": access, "refresh": refresh, "role": role}
 
 def refresh_token(token: str, db: Session):
     data = decode_token(token)

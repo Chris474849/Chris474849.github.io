@@ -3,7 +3,7 @@
     <div class="popup-container login-popup">
       <div class="popup-header">
         <h3 class="popup-title">Login de Administrador</h3>
-        <button class="close-btn" @click="router.push('/')">&times;</button>
+        <button class="close-btn" @click="router.push('/login')">&times;</button>
       </div>
 
       <div class="popup-content">
@@ -76,12 +76,15 @@ const handleLogin = async () => {
 
     sessionStorage.setItem("access", data.access)
     sessionStorage.setItem("refresh", data.refresh)
+    sessionStorage.setItem("authUser", JSON.stringify({ email: email.value }))
+    sessionStorage.setItem("authRole", data.role)
 
     router.push('/admin')
   } catch (err) {
     error.value = "Credenciales incorrectas."
   }
 }
+
 </script>
 
 

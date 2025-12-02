@@ -7,6 +7,7 @@ class Login(BaseModel):
 class TokenOut(BaseModel):
     access: str
     refresh: str
+    role: str
 
 class RegisterIn(BaseModel):
     email: EmailStr

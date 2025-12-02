@@ -346,6 +346,16 @@
           </div>
         </div>
 
+        <div v-if="activeSection === 'reports'" class="card">
+          <div class="card-header">
+            <h5 class="mb-0">Reportes</h5>
+          </div>
+          <div class="card-body">
+            <AdminReports />
+          </div>
+        </div>
+
+
         <!-- Sección Tema -->
         <div v-if="activeSection === 'theme'" class="card">
           <div class="card-header">
@@ -428,6 +438,8 @@ import { siteConfig, syncContactServices } from '@/config/siteConfig'
 import { fetchDefaultConfig, fetchCurrentConfig, CreateDefaultConfig, CreateCurrentConfig } from '@/api/config'
 import AdminRequests from './AdminRequests.vue'
 import AdminUsers from './AdminUser.vue'
+import AdminReports from './AdminReports.vue'
+
 
 const activeSection = ref('')
 const showConfirmModal = ref(false)
@@ -443,7 +455,8 @@ try {
 } catch (e) {
   parsedData = null
 }
-const currentRole = ref(parsedData?.role || 'worker')
+
+const currentRole = sessionStorage.getItem('authRole')
 
 const allSections = [
   { id: 'general', name: 'General', icon: 'fas fa-cog', roles: ['admin'] },
@@ -455,12 +468,14 @@ const allSections = [
   { id: 'footer', name: 'Pie de Página', icon: 'fas fa-align-center', roles: ['admin'] },
   { id: 'theme', name: 'Tema', icon: 'fas fa-palette', roles: ['admin'] },
   { id: 'requests', name: 'Solicitudes', icon: 'fas fa-list', roles: ['worker', 'admin'] },
-  { id: 'users', name: 'Usuarios', icon: 'fas fa-users-cog', roles: ['admin'] }
+  { id: 'users', name: 'Usuarios', icon: 'fas fa-users-cog', roles: ['admin'] },
+  { id: 'reports', name: 'Reportes', icon: 'fas fa-file-pdf', roles: ['admin'] }
+
 
 ]
 
 const sections = computed(() => {
-  return allSections.filter(section => section.roles.includes(currentRole.value))
+  return allSections.filter(section => section.roles.includes(currentRole))
 })
 
 onMounted(async () => {
